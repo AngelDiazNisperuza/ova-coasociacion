@@ -1,0 +1,22 @@
+<!doctype html><html lang="es"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#0d234c"><title>Mi espacio | Coasocia</title>
+<link rel="stylesheet" href="/auth.css"><script src="/panel.js" defer></script>
+</head><body>
+<header class="top"><a class="identity" href="/"><span class="logomark" aria-hidden="true">◈</span><span><strong>coasocia</strong><small>LABORATORIO DE HABILIDADES</small></span></a><nav class="header-actions"><a class="back" href="/">OVA público</a><button id="logout" class="link-button" type="button">Cerrar sesión</button></nav></header>
+<main class="dashboard" id="dashboard" hidden>
+<div class="dashboard-hero"><span class="kicker">ESPACIO PERSONAL</span><h1 id="welcome">Tu espacio Coasocia</h1><p id="subtitle">Aprendizaje activo y construcción compartida.</p></div>
+<section id="teacher-panel" hidden aria-labelledby="teacher-title">
+<h2 id="teacher-title">Administración docente</h2><p>Crea una clase y entrega su código de registro a tus estudiantes. El código se muestra una sola vez: consérvalo fuera del sitio.</p>
+<form id="class-form" class="create-class"><label>Nombre de clase<input name="name" maxlength="60" minlength="3" placeholder="Ej. Grado 10.º — Grupo A" required></label><button class="action" type="submit">Crear código de clase</button></form>
+<div id="class-result" class="class-result" role="status" aria-live="polite"></div>
+<h3>Clases creadas</h3><div id="class-list" class="class-list"></div>
+</section>
+<section id="student-panel" hidden><h2>Bienvenido a tu laboratorio</h2><p>Inicia el reto de aprendizaje y conversa con tu equipo sobre lo que descubran.</p><a class="action action-link" href="/#paso-1">Comenzar Reto 01</a></section>
+<section class="roulette-section" aria-labelledby="roulette-title"><span class="kicker">GAMIFICACIÓN FORMATIVA</span><h2 id="roulette-title">Ruleta de habilidades transversales</h2><p>Gira la ruleta para recibir una misión de comunicación, colaboración, pensamiento crítico o resolución de problemas. La actividad no genera calificación.</p>
+<div class="roulette-wrap"><div class="wheel" id="wheel" aria-hidden="true"><span>COMUNICACIÓN</span><span>COLABORACIÓN</span><span>ANÁLISIS</span><span>PROPUESTAS</span></div><div class="roulette-actions"><button class="action" type="button" id="spin">Girar la ruleta</button><div id="mission" role="status" aria-live="polite" class="mission">Selecciona una misión para comenzar.</div></div></div>
+</section>
+</main>
+<main id="loading" class="dashboard"><div class="auth-card"><h1>Verificando tu sesión…</h1><p id="loading-message">Necesitas una cuenta para ingresar.</p><a href="/acceso.html">Ir al inicio de sesión</a></div></main>
+<footer>Coasocia · Actividades formativas, sin calificaciones automáticas</footer>
+</body></html>

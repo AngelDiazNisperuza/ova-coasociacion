@@ -434,3 +434,27 @@ footer strong{font-family:var(--ah-font-display)}
   #paso-3,#paso-4{background:#fff!important}
   #paso-3 .fields textarea,#paso-4 .rubric-row{background:#fff!important;box-shadow:none!important}
 }
+
+
+/* Actividad 02: fotografía como fondo completo y no como tarjeta lateral · v0.5 */
+#paso-2{
+  background-color:#eef4fc;
+  background-image:
+    linear-gradient(105deg,rgba(246,249,255,.94) 0%,rgba(244,248,253,.90) 55%,rgba(233,243,252,.76) 100%),
+    url("assets/imagenes/fondos/Split-Panel Learning Workspace Banner-2.png");
+  background-size:cover;
+  background-position:center,right center;
+  background-repeat:no-repeat;
+}
+#paso-2 .step-body::after{display:none!important}
+#paso-2 .data-table-wrap table{background:rgba(255,255,255,.97)}
+#paso-2 .quiz label{background:rgba(255,255,255,.96)}
+@media(max-width:700px){
+ #paso-2{
+  background-image:
+   linear-gradient(90deg,rgba(246,249,255,.94),rgba(239,247,255,.88)),
+   url("assets/imagenes/fondos/Split-Panel Learning Workspace Banner-2.png");
+  background-position:center,right center
+ }
+}
+@media print{#paso-2{background:#fff!important}}

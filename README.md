@@ -66,3 +66,16 @@ Se confirmaron los archivos `portada.jpg`, `Split-Panel Learning Workspace Banne
 ## Selector de estudiantes y docentes
 
 En la franja visual del reto aparecen dos accesos de demostración. **Estudiantes** conduce a la secuencia de actividades (`#paso-1`); **Docentes** conduce a las orientaciones pedagógicas (`#docentes`). Actualmente son enlaces públicos dentro del mismo OVA: no existen cuentas, contraseñas, verificación de identidad ni autorización de administración. Cuando se implemente autenticación con un servicio de backend, el rol docente será el administrador del OVA y las funciones de gestión estarán protegidas por controles de acceso del servidor.
+
+
+## Autenticación con Pages Functions y D1 (fase 0.5)
+- Coasocia mantiene su sitio estático en Cloudflare Pages y añade funciones de servidor bajo functions/api/.
+- Acceso desde /acceso.html; panel de docentes y estudiantes en /panel.html.
+- Seudónimos para estudiantes; registro únicamente con un código de clase emitido por el docente; contraseñas con PBKDF2-SHA-256, sal aleatoria y 210 000 iteraciones; sesión con cookie HttpOnly, Secure y SameSite=Lax.
+- El primer docente se activa con una clave secreta configurada en Cloudflare bajo ADMIN_SETUP_KEY (mínimo 24 caracteres), nunca en GitHub.
+- Las clases tienen códigos de registro almacenados únicamente como hash, y se muestran una sola vez. Docentes administran clases desde un panel protegido; los estudiantes acceden con sus credenciales.
+- La ruleta es una actividad formativa inicial; no guarda progreso ni genera calificaciones ni registros de desempeño.
+- Migración SQL: migrations/0001_autenticacion.sql. Ejecutarla manualmente en una base D1 nueva y específica del proyecto; no reutilizar la D1 de otro OVA.
+- En Cloudflare Pages > Settings > Bindings, añadir binding D1 con nombre exacto DB, seleccionar esa base y realizar un nuevo despliegue. En Settings > Variables and Secrets establecer ADMIN_SETUP_KEY como secreto, disponible en producción, y volver a desplegar.
+- Hasta completar estos pasos, la interfaz mostrará un mensaje de configuración pendiente. NO se deben prometer cuentas funcionales antes de probar el acceso real.
+- No se almacenan nombres reales, documentos de identidad ni calificaciones. La implementación para uso con menores requiere revisión de privacidad, autorizaciones institucionales y políticas de retención.
