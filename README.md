@@ -1,4 +1,4 @@
-# Coasocia — prototipo inicial 0.1
+# Coasocia — prototipo con diseño Academic Horizon 0.2
 
 ## Propósito
 
@@ -53,3 +53,11 @@ Para cargar manualmente en GitHub: abrir la carpeta deseada, seleccionar **Add f
 ## Control de cambios
 
 Esta primera versión es estática; no usar sesiones, contraseñas, D1 ni Workers todavía. Antes de publicar imágenes, verificar derechos de uso y privacidad, especialmente si aparecen menores de edad.
+
+## Diseño Academic Horizon (versión 0.2)
+
+La hoja `academic-horizon.css` se carga después de `styles.css` y adapta la interfaz a la paleta azul marino institucional, verde de acción, superficies claras, componentes con bordes finos, botones de radio 8px, tarjetas de radio 16px y disposición adaptable. El contenido y la lógica de `app.js` permanecen sin cambios. Para revertir solo el aspecto visual, retirar el enlace de `academic-horizon.css` de `index.html`.
+
+Las fuentes Plus Jakarta Sans e Inter se solicitan al servidor de Google Fonts en navegadores conectados; la aplicación utiliza fuentes locales de reserva cuando no hay internet. Estos recursos de estilo pueden generar solicitudes de red al proveedor de fuentes, pero los datos introducidos en las actividades no se envían a dicho proveedor ni a ningún servidor del proyecto. Una mejora de privacidad posterior puede alojar los archivos tipográficos localmente.
+
+Se confirmaron los archivos `portada.jpg`, `Split-Panel Learning Workspace Banner-2.png` y `Dual Educational Study and Teaching Scenes-1.png` en la carpeta de fondos. Mientras no existan `reto.jpg` y `docentes.jpg`, el diseño incorpora los dos PNG como respaldo visual; si luego se publican los JPG con los nombres previstos, prevalecerán como primera imagen de cada sección.
