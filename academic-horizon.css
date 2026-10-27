@@ -296,3 +296,93 @@ footer strong{font-family:var(--ah-font-display)}
 }
 @media(prefers-reduced-motion:reduce){.access-card{transition:none}.access-card:hover{transform:none}}
 @media print{.access-banner{display:none!important}}
+
+/* Coasocia: tarjetas de actividades con identidad visual interior v0.3 */
+/* El fondo con fotografías antes quedaba oculto detrás del gran panel blanco. */
+.steps{
+  background:#f6f8fc;
+  border-color:#d5e1f0;
+  box-shadow:0 9px 30px rgba(13,35,76,.06);
+}
+.step{
+  position:relative;
+  overflow:hidden;
+  isolation:isolate;
+  border-bottom-color:#d5e1f0;
+  border-left:4px solid transparent;
+  padding-left:34px;
+}
+#paso-1{
+  background:linear-gradient(112deg,#fff 0%,#f4f7ff 75%,#edf4fe 100%);
+  border-left-color:#647da8;
+}
+#paso-2{
+  background:linear-gradient(112deg,#f4f8fd 0%,#eef4fc 73%,#e6eef8 100%);
+  border-left-color:#2b5975;
+}
+#paso-3{
+  background:linear-gradient(112deg,#fff 0%,#f3f8f5 77%,#e8f4ee 100%);
+  border-left-color:#3c8a63;
+}
+#paso-4{
+  background:linear-gradient(112deg,#f0f5ff 0%,#f5f8fe 70%,#fff 100%);
+  border-left-color:#7185bb;
+}
+.step-index{
+  box-shadow:0 2px 7px rgba(13,35,76,.07);
+  border:1px solid rgba(179,198,248,.4);
+}
+.step-label{letter-spacing:.075em}
+#paso-1 .step-label{color:#334670}
+#paso-2 .step-label{color:#255d79}
+#paso-3 .step-label{color:#166534}
+#paso-4 .step-label{color:#334670}
+.quiz label{background:rgba(255,255,255,.94)}
+.quiz label:has(input:checked){background:#f0fdf4}
+.data-table-wrap{position:relative}
+.data-table-wrap table{
+  box-shadow:0 3px 15px rgba(13,35,76,.035);
+}
+.fields textarea{
+  background:rgba(255,255,255,.96);
+  box-shadow:0 1px 3px rgba(13,35,76,.035);
+}
+.rubric-row{
+  background:rgba(255,255,255,.94);
+  box-shadow:0 1px 2px rgba(13,35,76,.025)
+}
+/* La ilustración ocupa el espacio vacío a la derecha de los datos, sin cubrir ejercicios. */
+@media(min-width:1220px){
+  #paso-2 .step-body{position:relative}
+  #paso-2 .step-body::after{
+    content:"";
+    position:absolute;
+    top:138px;
+    right:0;
+    width:31%;
+    height:245px;
+    border:1px solid rgba(197,211,230,.7);
+    border-radius:14px;
+    box-shadow:0 12px 30px rgba(13,35,76,.08);
+    background-image:
+      linear-gradient(180deg,rgba(247,250,255,.07),rgba(13,35,76,.11)),
+      url("assets/imagenes/fondos/Split-Panel Learning Workspace Banner-2.png");
+    background-size:cover;
+    background-position:right center;
+    pointer-events:none;
+    opacity:.78;
+  }
+}
+@media(max-width:700px){
+  .step{padding-left:16px;border-left-width:3px}
+  #paso-2 .step-body::after{display:none}
+}
+/* La ficha impresa debe permanecer sobre blanco y evitar imágenes decorativas. */
+@media print{
+  .steps,.step,#paso-1,#paso-2,#paso-3,#paso-4{
+    background:#fff!important;
+    border-left:0!important;
+    box-shadow:none!important;
+  }
+  #paso-2 .step-body::after{display:none!important}
+}
