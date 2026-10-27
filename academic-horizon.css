@@ -75,10 +75,48 @@ a:focus-visible,button:focus-visible,input:focus-visible,textarea:focus-visible,
 .section-kicker{color:#166534;font-size:11px;font-weight:700;letter-spacing:.09em}
 .section-lead p{color:#536479;line-height:1.75}
 .subject{background:#fff;border:1px solid var(--ah-line);border-radius:999px;color:#526173;font-size:12px;font-family:var(--ah-font-display);font-weight:600}
+/* El fondo aprovecha la imagen existente en GitHub; las tarjetas mantienen contraste alto. */
 .challenge{
-  background-color:#f8fafc;
-  background-image:linear-gradient(rgba(248,250,252,.945),rgba(248,250,252,.975)),url("assets/imagenes/fondos/reto.jpg"),url("assets/imagenes/fondos/Split-Panel Learning Workspace Banner-2.png");
-  background-position:center;background-size:cover
+  position:relative;
+  isolation:isolate;
+  background-color:#f7f9fd;
+  background-image:
+    radial-gradient(ellipse at 4% 8%,rgba(217,226,255,.6),transparent 40%),
+    radial-gradient(ellipse at 97% 42%,rgba(211,239,222,.4),transparent 36%),
+    linear-gradient(180deg,#f8fafc 0%,#f4f7fd 56%,#f8fafc 100%);
+}
+.challenge::before{
+  content:"";
+  position:absolute;inset:0 0 auto;height:650px;
+  background-image:
+    linear-gradient(100deg,rgba(248,250,252,.74),rgba(248,250,252,.46) 60%,rgba(248,250,252,.27)),
+    url("assets/imagenes/fondos/Split-Panel Learning Workspace Banner-2.png");
+  background-position:center 38%;background-size:cover;
+  opacity:.74;
+  -webkit-mask-image:linear-gradient(180deg,#000 0%,rgba(0,0,0,.92) 43%,transparent 100%);
+  mask-image:linear-gradient(180deg,#000 0%,rgba(0,0,0,.92) 43%,transparent 100%);
+  pointer-events:none;z-index:-1;
+}
+.challenge-banner{
+  height:clamp(145px,15vw,205px);
+  margin:0 0 24px;
+  position:relative;
+  overflow:hidden;
+  border-radius:16px;
+  border:1px solid #dce5f2;
+  box-shadow:0 12px 28px rgba(13,35,76,.09);
+  background-color:#e5eeff;
+  background-image:
+    linear-gradient(100deg,rgba(13,35,76,.12),transparent 48%,rgba(13,35,76,.16)),
+    url("assets/imagenes/fondos/Split-Panel Learning Workspace Banner-2.png");
+  background-size:cover;
+  background-position:center 57%;
+}
+.challenge-banner::after{
+  content:"";position:absolute;inset:0;
+  border-top:3px solid rgba(13,35,76,.11);
+  background:linear-gradient(90deg,rgba(13,35,76,.1),transparent 52%,rgba(255,255,255,.12));
+  pointer-events:none;
 }
 .scenario{background:#eff4ff;border:1px solid #d9e2ff;border-left:4px solid #4b5e8a;border-radius:12px;padding:26px 28px;gap:18px;box-shadow:var(--ah-shadow)}
 .scenario-icon{border-radius:10px;background:#d9e2ff;color:var(--ah-navy);font-family:var(--ah-font-display)}
@@ -191,4 +229,13 @@ footer strong{font-family:var(--ah-font-display)}
   .step h3{font-size:17px;color:#000}
   .data-table-wrap th{background:#eee!important}
   .fields textarea{min-height:65px}
+}
+
+/* Fondos con adaptación para pantallas pequeñas e impresión. */
+@media(max-width:700px){
+  .challenge::before{height:465px;opacity:.55;background-position:center top}
+  .challenge-banner{height:132px;margin-bottom:18px;border-radius:12px;background-position:center 55%}
+}
+@media print{
+  .challenge-banner,.challenge::before{display:none!important}
 }
