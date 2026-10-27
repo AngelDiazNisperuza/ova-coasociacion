@@ -386,3 +386,51 @@ footer strong{font-family:var(--ah-font-display)}
   }
   #paso-2 .step-body::after{display:none!important}
 }
+
+
+/* Coasocia: fondos fotográficos de apoyo para actividades 03 y 04 · v0.4
+   Fotografías existentes en el repositorio, preservando el contraste del formulario. */
+#paso-3{
+  background-color:#f3f8f5;
+  background-image:
+    linear-gradient(105deg,rgba(250,253,251,.93) 0%,rgba(245,250,247,.89) 43%,rgba(241,249,245,.73) 100%),
+    url("assets/imagenes/fondos/Dual Educational Study and Teaching Scenes-1.png");
+  background-position:center,center 48%;
+  background-size:cover;
+  background-repeat:no-repeat;
+}
+#paso-4{
+  background-color:#eff4fd;
+  background-image:
+    linear-gradient(105deg,rgba(247,250,255,.94) 0%,rgba(244,248,255,.87) 50%,rgba(231,241,252,.71) 100%),
+    url("assets/imagenes/fondos/Split-Panel Learning Workspace Banner-2.png");
+  background-position:center,center 60%;
+  background-size:cover;
+  background-repeat:no-repeat;
+}
+#paso-3 .fields textarea,
+#paso-4 .rubric-row{
+  background:rgba(255,255,255,.97);
+  border-color:#cbd8e7;
+  box-shadow:0 2px 8px rgba(13,35,76,.045);
+}
+#paso-3 .step-index{background:#e7f5ec;color:#166534;border-color:#c8ead4}
+#paso-4 .step-index{background:#e5edff;color:#334670;border-color:#cfdefc}
+@media(max-width:700px){
+  #paso-3{
+    background-image:
+      linear-gradient(90deg,rgba(250,253,251,.92),rgba(247,252,249,.82)),
+      url("assets/imagenes/fondos/Dual Educational Study and Teaching Scenes-1.png");
+    background-position:center,right center;
+  }
+  #paso-4{
+    background-image:
+      linear-gradient(90deg,rgba(247,250,255,.93),rgba(237,245,255,.83)),
+      url("assets/imagenes/fondos/Split-Panel Learning Workspace Banner-2.png");
+    background-position:center,right center;
+  }
+}
+@media print{
+  #paso-3,#paso-4{background:#fff!important}
+  #paso-3 .fields textarea,#paso-4 .rubric-row{background:#fff!important;box-shadow:none!important}
+}
