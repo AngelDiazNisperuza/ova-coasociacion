@@ -61,3 +61,8 @@ La hoja `academic-horizon.css` se carga después de `styles.css` y adapta la int
 Las fuentes Plus Jakarta Sans e Inter se solicitan al servidor de Google Fonts en navegadores conectados; la aplicación utiliza fuentes locales de reserva cuando no hay internet. Estos recursos de estilo pueden generar solicitudes de red al proveedor de fuentes, pero los datos introducidos en las actividades no se envían a dicho proveedor ni a ningún servidor del proyecto. Una mejora de privacidad posterior puede alojar los archivos tipográficos localmente.
 
 Se confirmaron los archivos `portada.jpg`, `Split-Panel Learning Workspace Banner-2.png` y `Dual Educational Study and Teaching Scenes-1.png` en la carpeta de fondos. Mientras no existan `reto.jpg` y `docentes.jpg`, el diseño incorpora los dos PNG como respaldo visual; si luego se publican los JPG con los nombres previstos, prevalecerán como primera imagen de cada sección.
+
+
+## Selector de estudiantes y docentes
+
+En la franja visual del reto aparecen dos accesos de demostración. **Estudiantes** conduce a la secuencia de actividades (`#paso-1`); **Docentes** conduce a las orientaciones pedagógicas (`#docentes`). Actualmente son enlaces públicos dentro del mismo OVA: no existen cuentas, contraseñas, verificación de identidad ni autorización de administración. Cuando se implemente autenticación con un servicio de backend, el rol docente será el administrador del OVA y las funciones de gestión estarán protegidas por controles de acceso del servidor.

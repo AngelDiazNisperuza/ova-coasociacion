@@ -239,3 +239,60 @@ footer strong{font-family:var(--ah-font-display)}
 @media print{
   .challenge-banner,.challenge::before{display:none!important}
 }
+
+/* Selector de recorridos sobre la imagen existente del reto. */
+.access-banner{
+  min-height:350px;height:auto;display:flex;flex-direction:column;align-items:center;justify-content:center;
+  gap:17px;padding:30px clamp(18px,3.7vw,55px);isolation:isolate;
+  background-position:center 57%;text-align:center;
+}
+.access-banner::before{
+  content:"";position:absolute;inset:0;z-index:0;
+  background:linear-gradient(96deg,rgba(8,22,48,.68),rgba(13,35,76,.56) 50%,rgba(8,22,48,.68));
+  pointer-events:none;
+}
+.access-banner::after{z-index:1;background:linear-gradient(90deg,rgba(8,22,48,.12),transparent 50%,rgba(8,22,48,.12))}
+.access-banner > *{position:relative;z-index:2}
+.access-intro{color:#fff}
+.access-eyebrow{
+  font-family:var(--ah-font-display);font-weight:700;font-size:11px;letter-spacing:.11em;
+  color:#c7f4d4;text-transform:uppercase
+}
+.access-intro h3{
+  margin:7px 0 4px;font-family:var(--ah-font-display);font-size:clamp(23px,2.6vw,33px);
+  font-weight:800;line-height:1.18;letter-spacing:-.025em;color:#fff
+}
+.access-intro p{margin:0;color:#eaf1ff;font-size:14px;line-height:1.5}
+.access-choices{width:min(100%,835px);display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;text-align:left}
+.access-card{
+  display:flex;align-items:center;gap:15px;min-width:0;min-height:88px;padding:17px 19px;
+  text-decoration:none;color:#081630;background:rgba(255,255,255,.97);
+  border:1px solid rgba(255,255,255,.7);border-radius:13px;box-shadow:0 13px 26px rgba(8,22,48,.22);
+  transition:transform .18s,box-shadow .18s,border-color .18s
+}
+.access-card:hover,.access-card:focus-visible{
+  transform:translateY(-3px);border-color:#62df7d;box-shadow:0 19px 30px rgba(8,22,48,.27);
+  text-decoration:none
+}
+.access-card:focus-visible{outline:3px solid #62df7d;outline-offset:3px}
+.access-card-mark{
+  display:grid;place-items:center;flex:0 0 45px;width:45px;height:45px;
+  background:#f0fdf4;border:1px solid #bbf7d0;color:#166534;border-radius:11px;
+  font:800 14px var(--ah-font-display)
+}
+.access-teacher .access-card-mark{color:#0d234c;background:#eff4ff;border-color:#d9e2ff}
+.access-card-copy{display:flex;flex-direction:column;gap:3px;flex:1;min-width:0}
+.access-card-copy strong{font:750 17px/1.3 var(--ah-font-display);letter-spacing:-.02em}
+.access-card-copy span{font:400 12px/1.45 var(--ah-font-body);color:#526173}
+.access-arrow{font-size:23px;color:#166534;line-height:1;flex-shrink:0}
+.access-teacher .access-arrow{color:#0d234c}
+.access-note{max-width:880px;margin:0;color:#f1f5ff;font-size:11px;line-height:1.55;text-shadow:0 1px 4px rgba(8,22,48,.48)}
+@media(max-width:700px){
+  .access-banner{min-height:auto;padding:30px 19px;gap:15px}
+  .access-choices{grid-template-columns:1fr;gap:10px}
+  .access-card{min-height:76px;padding:13px 15px}
+  .access-intro p{font-size:13px}
+  .access-note{font-size:10.5px}
+}
+@media(prefers-reduced-motion:reduce){.access-card{transition:none}.access-card:hover{transform:none}}
+@media print{.access-banner{display:none!important}}
