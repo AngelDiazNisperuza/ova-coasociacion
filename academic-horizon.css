@@ -458,3 +458,19 @@ footer strong{font-family:var(--ah-font-display)}
  }
 }
 @media print{#paso-2{background:#fff!important}}
+
+
+/* Ruleta formativa pública, accesible aun antes de habilitar D1. */
+.game-section{background:linear-gradient(120deg,#edf3ff,#f0f8f3);border-block:1px solid #e0e9f4}
+.game-grid{display:grid;grid-template-columns:320px minmax(0,1fr);gap:48px;align-items:center;max-width:980px;margin:36px auto 0}
+.game-wheel{position:relative;border-radius:50%;width:290px;height:290px;border:10px solid #fff;box-shadow:0 17px 37px rgba(13,35,76,.16);background:conic-gradient(#d9e2ff 0 25%,#bce9cf 25% 50%,#c4d3ec 50% 75%,#f2ead2 75% 100%);transition:transform 1.1s cubic-bezier(.2,.7,.12,1)}
+.game-wheel span{position:absolute;color:#0d234c;font:800 11px var(--ah-font-display)}
+.game-wheel span:nth-child(1){top:23%;left:51%}
+.game-wheel span:nth-child(2){top:55%;right:8%}
+.game-wheel span:nth-child(3){bottom:24%;left:17%}
+.game-wheel span:nth-child(4){top:25%;left:15%}
+.game-panel{background:#fff;border:1px solid #dce6f1;border-radius:16px;padding:30px;box-shadow:0 12px 28px rgba(13,35,76,.055)}
+.game-panel h3{color:#0d234c;font-size:23px}.game-panel>p{color:#526173;line-height:1.75}.game-result{padding:16px 20px;margin:18px 0 0;background:#eff4ff;border:1px solid #d9e2ff;border-radius:10px;min-height:78px;color:#263b52!important}
+@media(max-width:700px){.game-grid{grid-template-columns:1fr;justify-items:center;gap:24px}.game-wheel{width:245px;height:245px}.game-panel{padding:22px;width:100%}}
+@media(prefers-reduced-motion:reduce){.game-wheel{transition:none}}
+@media print{.game-section{display:none!important}}

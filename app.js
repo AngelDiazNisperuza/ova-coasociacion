@@ -54,3 +54,33 @@ document.querySelector('#reset')?.addEventListener('click', () => {
   document.querySelectorAll('.feedback').forEach(element => {element.textContent = ''; element.classList.remove('success');});
   document.querySelector('#reto')?.scrollIntoView({behavior: 'smooth'});
 });
+
+// Ruleta pública de aprendizaje colaborativo, sin seguimiento ni calificaciones.
+const publicMissions = [
+  'Comunicación: explica a otra persona la situación del agua con una evidencia concreta.',
+  'Pensamiento crítico: identifica qué dato sería necesario verificar antes de actuar.',
+  'Colaboración: escucha una propuesta de tu equipo y explica cómo podrías mejorarla.',
+  'Resolución de problemas: compara dos soluciones y elige la que tenga mejores evidencias.',
+  'Creatividad: crea un lema corto para promover el uso responsable del agua.',
+  'Coasociación: acuerda una acción con otra persona y justifiquen la decisión compartida.'
+];
+let publicRotation=0,publicSpinning=false;
+document.querySelector('#game-spin')?.addEventListener('click',()=>{
+  if(publicSpinning)return;
+  publicSpinning=true;
+  const button=document.querySelector('#game-spin');
+  const wheel=document.querySelector('.game-wheel');
+  const result=document.querySelector('#game-result');
+  const array=new Uint32Array(1);
+  crypto.getRandomValues(array);
+  const pick=array[0]%publicMissions.length;
+  publicRotation+=720+Math.round(360*pick/publicMissions.length)+29;
+  button.disabled=true;
+  result.textContent='Seleccionando una misión…';
+  wheel.style.transform='rotate('+publicRotation+'deg)';
+  setTimeout(()=>{
+    result.textContent=publicMissions[pick];
+    button.disabled=false;
+    publicSpinning=false;
+  },window.matchMedia('(prefers-reduced-motion: reduce)').matches?10:1150);
+});
