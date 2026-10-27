@@ -1,0 +1,66 @@
+import {response,error,now,dbReady,validOrigin,input,userName,passwordOK,digest,hashPassword,verifyPassword,constantCompare,createSession,clearCookie,activeUser,removeSession,locked,failure,clearFailures} from '../_lib/security.js';
+
+export async function onRequestGet({request,env}){
+ if(!dbReady(env))return error('El acceso está pendiente de conexión con D1.',503);
+ try{
+  const user=await activeUser(env,request);
+  return response({ok:true,user:user?{username:user.username,role:user.role}:null});
+ }catch{return error('Es necesario inicializar la base D1.',503)}
+}
+export async function onRequestPost({request,env}){
+ if(!validOrigin(request))return error('Origen no autorizado.',403);
+ if(!dbReady(env))return error('Falta conectar la base D1 en Cloudflare.',503);
+ let data;try{data=await input(request)}catch{return error('Solicitud incorrecta.')}
+ try{
+  if(data.action==='logout'){
+   await removeSession(env,request);
+   return response({ok:true},200,{'set-cookie':clearCookie()});
+  }
+  if(data.action==='login'){
+   const username=userName(data.username);
+   if(!username||typeof data.password!=='string'||data.password.length>128)return error('Usuario o contraseña incorrectos.',401);
+   if(await locked(env,username))return error('Demasiados intentos. Vuelve a intentarlo más tarde.',429);
+   const user=await env.DB.prepare('SELECT * FROM users WHERE username=? AND active=1').bind(username).first();
+   const valid=user&&await verifyPassword(data.password,user);
+   if(!valid){await failure(env,username);return error('Usuario o contraseña incorrectos.',401)}
+   await clearFailures(env,username);
+   const session=await createSession(env,user.id);
+   return response({ok:true,user:{username:user.username,role:user.role}},200,{'set-cookie':session});
+  }
+  if(data.action==='register'){
+   const username=userName(data.username);
+   const code=typeof data.classCode==='string'?data.classCode.toUpperCase().replace(/[^A-Z0-9]/g,''):'';
+   if(!username||!passwordOK(data.password)||!/^[A-Z0-9]{16}$/.test(code))return error('Necesitas un seudónimo válido, una contraseña de 10 caracteres y un código de clase.');
+   const cls=await env.DB.prepare('SELECT id FROM classes WHERE join_code_hash=? AND active=1').bind(await digest(code)).first();
+   if(!cls)return error('El código de clase no es válido.',403);
+   const existing=await env.DB.prepare('SELECT id FROM users WHERE username=?').bind(username).first();
+   if(existing)return error('Ese usuario ya existe.',409);
+   const number=await env.DB.prepare('SELECT COUNT(*) AS total FROM users WHERE class_id=?').bind(cls.id).first();
+   if(number.total>=50)return error('La clase está completa.',403);
+   const record=await hashPassword(data.password),uid=crypto.randomUUID();
+   await env.DB.prepare('INSERT INTO users(id,username,role,password_hash,salt,iterations,class_id,created_at) VALUES (?,?,?,?,?,?,?,?)')
+    .bind(uid,username,'estudiante',record.hash,record.salt,record.iterations,cls.id,now()).run();
+   const session=await createSession(env,uid);
+   return response({ok:true,user:{username,role:'estudiante'}},201,{'set-cookie':session});
+  }
+  if(data.action==='setup'){
+   const username=userName(data.username);
+   if(!username||!passwordOK(data.password,true))return error('Usuario válido y contraseña docente de mínimo 12 caracteres.');
+   const secret=env.ADMIN_SETUP_KEY;
+   if(typeof secret!=='string'||secret.length<24)return error('Falta configurar ADMIN_SETUP_KEY en Cloudflare.',503);
+   if(!await constantCompare(data.setupKey,secret))return error('Clave de activación incorrecta.',403);
+   const userCount=await env.DB.prepare("SELECT COUNT(*) AS total FROM users WHERE role='docente'").first();
+   if(userCount.total>0)return error('Ya existe una cuenta docente administradora.',409);
+   const record=await hashPassword(data.password),uid=crypto.randomUUID();
+   const inserted=await env.DB.prepare("INSERT INTO users(id,username,role,password_hash,salt,iterations,created_at) SELECT ?,?,'docente',?,?,?,? WHERE NOT EXISTS(SELECT 1 FROM users WHERE role='docente')")
+    .bind(uid,username,record.hash,record.salt,record.iterations,now()).run();
+   if(inserted.meta?.changes!==1)return error('Ya existe una cuenta docente administradora.',409);
+   const session=await createSession(env,uid);
+   return response({ok:true,user:{username,role:'docente'}},201,{'set-cookie':session});
+  }
+  return error('Acción no válida.');
+ }catch(e){
+  if(String(e?.message).includes('UNIQUE constraint'))return error('El nombre de usuario ya está ocupado.',409);
+  return error('La base de datos aún requiere configuración.',503);
+ }
+}
