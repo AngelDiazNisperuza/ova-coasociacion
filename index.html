@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#102d39">
+  <meta name="description" content="Prototipo didáctico de coasociación para educación media académica, basado en el capítulo V de la tesis doctoral de Ibeth Patricia Ruiz Olea.">
+  <title>Coasocia | Laboratorio de habilidades transversales</title>
+  <link rel="stylesheet" href="styles.css">
+  <script src="app.js" defer></script>
+</head>
+<body>
+  <a class="skip" href="#principal">Saltar al contenido</a>
+  <header class="site-header">
+    <div class="brand" aria-label="Coasocia">
+      <span class="mark" aria-hidden="true"><span></span><span></span><span></span></span>
+      <div><strong>coasocia</strong><small>LABORATORIO DE HABILIDADES</small></div>
+    </div>
+    <nav aria-label="Secciones principales">
+      <a href="#inicio">Inicio</a><a href="#reto">Reto 01</a><a href="#docentes">Docentes</a><a href="#seguimiento">Seguimiento</a>
+    </nav>
+    <span class="version">PROTOTIPO 0.1</span>
+  </header>
+
+  <main id="principal">
+    <section class="hero" id="inicio" aria-labelledby="hero-title">
+      <div class="hero-inner">
+        <div class="eyebrow"><span class="dot"></span> Educación media académica · 10.º y 11.º</div>
+        <h1 id="hero-title">Aprender es <em>construir</em> juntos.</h1>
+        <p>Explora un problema cercano, analiza evidencias y propone soluciones con otras personas. Un entorno inicial para poner en práctica la pedagogía de la coasociación y las habilidades transversales.</p>
+        <div class="hero-actions"><a class="button primary" href="#reto">Comenzar el reto <span aria-hidden="true">→</span></a><a class="button secondary" href="#docentes">Orientación docente</a></div>
+        <div class="hero-note">Actividad modelo para revisión pedagógica. No constituye una intervención validada ni mide cambios en habilidades.</div>
+      </div>
+      <div class="hero-visual" aria-label="Diagrama de un ciclo de aprendizaje: indagar, dialogar, proponer, reflexionar">
+        <div class="orbit orbit-one"></div><div class="orbit orbit-two"></div>
+        <div class="center-circle"><span class="orbit-small">APRENDIZAJE</span><strong>en coasociación</strong><span>Conocimiento compartido</span></div>
+        <div class="float-tag t1">01 · Indagar</div><div class="float-tag t2">02 · Dialogar</div><div class="float-tag t3">03 · Proponer</div><div class="float-tag t4">04 · Reflexionar</div>
+      </div>
+    </section>
+
+    <section class="intro-band" aria-label="Habilidades que se trabajan">
+      <p>HABILIDADES TRANSVERSALES DEL RETO</p>
+      <div><span>Comunicación</span><span>Pensamiento crítico</span><span>Resolución de problemas</span><span>Colaboración</span></div>
+    </section>
+
+    <section class="section challenge" id="reto" aria-labelledby="reto-title">
+      <div class="section-lead"><div><span class="section-kicker">EXPERIENCIA INTERDISCIPLINARIA / MODELO INICIAL</span><h2 id="reto-title">Reto 01. ¿Cómo cuidar el agua en nuestra institución?</h2><p>Una situación de práctica que integra Ciencias, Matemáticas y Lenguaje para pasar de una pregunta a una propuesta argumentada.</p></div><span class="subject">45–60 min · Orientativo</span></div>
+      <div class="scenario"><div class="scenario-icon">?</div><div><h3>La situación</h3><p>La comunidad escolar desea reducir el desperdicio de agua, pero todavía no conoce las principales causas. El equipo necesita reunir evidencias antes de acordar una acción. Los números de esta actividad son <strong>simulados</strong>; no describen las instituciones estudiadas en la tesis.</p></div></div>
+      <div class="steps" aria-label="Secuencia de aprendizaje">
+        <div class="step" id="paso-1"><div class="step-index">01</div><div class="step-body"><div class="step-label">INDAGAR · PENSAMIENTO CRÍTICO</div><h3>¿Qué debemos investigar primero?</h3><p>Selecciona la opción que proporciona una base más sólida para decidir.</p>
+          <fieldset class="quiz" data-quiz="evidencia"><legend class="sr-only">¿Qué debemos investigar primero?</legend>
+            <label><input type="radio" name="q1" value="a"> Comprar dispositivos de ahorro sin revisar la situación.</label>
+            <label><input type="radio" name="q1" value="b"> Observar los puntos de uso, recoger registros y consultar a la comunidad.</label>
+            <label><input type="radio" name="q1" value="c"> Elegir una solución únicamente por votación.</label>
+          </fieldset><button class="small-button" type="button" data-check="evidencia">Revisar respuesta</button><div class="feedback" data-feedback="evidencia" role="status" aria-live="polite"></div>
+        </div></div>
+        <div class="step" id="paso-2"><div class="step-index">02</div><div class="step-body"><div class="step-label">ANALIZAR · RESOLUCIÓN DE PROBLEMAS</div><h3>Leer datos y argumentar</h3><p>En este ejemplo ficticio se registran pérdidas diarias estimadas en tres grifos. ¿Cuál sería el total en siete días si las pérdidas no cambian?</p>
+          <div class="data-table-wrap"><table><caption>Datos simulados para practicar</caption><thead><tr><th>Grifo</th><th>Pérdida diaria</th></tr></thead><tbody><tr><td>A</td><td>2 litros</td></tr><tr><td>B</td><td>5 litros</td></tr><tr><td>C</td><td>3 litros</td></tr></tbody></table></div>
+          <fieldset class="quiz quiz-inline" data-quiz="calculo"><legend class="sr-only">Pérdida total semanal</legend><label><input type="radio" name="q2" value="a"> 10 litros</label><label><input type="radio" name="q2" value="b"> 35 litros</label><label><input type="radio" name="q2" value="c"> 70 litros</label></fieldset><button class="small-button" type="button" data-check="calculo">Revisar cálculo</button><div class="feedback" data-feedback="calculo" role="status" aria-live="polite"></div>
+        </div></div>
+        <div class="step" id="paso-3"><div class="step-index">03</div><div class="step-body"><div class="step-label">DIALOGAR Y PROPONER · COMUNICACIÓN Y COLABORACIÓN</div><h3>Construir una solución en equipo</h3><p>Contrasta tu interpretación con otro estudiante y negocien una propuesta que responda a las evidencias. Completa una ficha para llevarla a la discusión presencial con el docente.</p>
+            <div class="fields"><label for="evidencia">¿Qué nos dicen los datos y qué falta comprobar?<textarea id="evidencia" rows="3" placeholder="Explica la evidencia y sus límites sin inventar observaciones reales."></textarea></label><label for="dialogo">¿Qué idea aportó otra persona y cómo influyó en la propuesta?<textarea id="dialogo" rows="3" placeholder="Escribe una idea discutida con tu equipo; si trabajas a solas, anota qué preguntarías."></textarea></label><label for="propuesta">¿Qué acción concreta proponen y cómo comprobarían su utilidad?<textarea id="propuesta" rows="3" placeholder="Formula una acción viable, los responsables y una evidencia para revisarla."></textarea></label></div>
+        </div></div>
+        <div class="step" id="paso-4"><div class="step-index">04</div><div class="step-body"><div class="step-label">REFLEXIONAR · AUTOEVALUACIÓN FORMATIVA</div><h3>Revisa tu proceso de aprendizaje</h3><p>Elige un nivel para cada habilidad. Esta es una autoevaluación orientativa, no una medición validada del nivel de desarrollo.</p>
+          <div class="rubric" id="rubric"></div><div class="actions"><button class="button primary" type="button" id="print-summary">Imprimir o guardar ficha en PDF</button><button class="button outline" type="button" id="reset">Reiniciar actividad</button></div><p class="privacy-note">Los textos se mantienen únicamente en esta página mientras esté abierta. No se envían al servidor ni se registran estudiantes.</p>
+        </div></div>
+      </div>
+    </section>
+
+    <section class="section teacher-section" id="docentes"><div class="section-lead"><div><span class="section-kicker">DIMENSIÓN ESTRATÉGICA DE1</span><h2>Orientación para docentes</h2><p>La mediación pedagógica es parte del diseño: el reto digital no sustituye el acompañamiento, la conversación ni la valoración de evidencias.</p></div></div>
+      <div class="teacher-grid"><article><div class="card-number">01</div><h3>Antes de comenzar</h3><p>Presentar la situación, recuperar saberes previos y distribuir responsabilidades del equipo. Aclarar que los datos iniciales son simulados.</p></article><article><div class="card-number">02</div><h3>Durante el reto</h3><p>Plantear preguntas abiertas, orientar la revisión de fuentes, propiciar el debate y solicitar justificaciones de las decisiones tomadas.</p></article><article><div class="card-number">03</div><h3>Al finalizar</h3><p>Revisar la propuesta del equipo mediante evidencias, contrastar alternativas y acordar posibilidades de mejora y seguimiento.</p></article></div>
+    </section>
+
+    <section class="section monitor" id="seguimiento"><div class="monitor-content"><span class="section-kicker">DIMENSIÓN ESTRATÉGICA DE3</span><h2>Seguimiento sin confundir actividad con impacto</h2><p>La ficha imprimible recoge respuestas, justificaciones y autoevaluaciones para discusión docente. No se generan calificaciones oficiales, informes institucionales ni afirmaciones sobre efectividad educativa.</p><ul><li>Evidencia de comprensión de un problema y sus datos</li><li>Registro de diálogo y decisión compartida</li><li>Reflexión sobre cuatro habilidades transversales</li></ul></div><div class="monitor-card"><span>TRAZABILIDAD PEDAGÓGICA</span><div class="status-item"><span>DE1</span> Mediación y formación docente</div><div class="status-item"><span>DE2</span> Reto interdisciplinario y diálogo</div><div class="status-item"><span>DE3</span> Registro y seguimiento formativo</div><div class="status-foot">Referencia: capítulo V, tablas 9–11</div></div></section>
+  </main>
+  <footer><span><strong>coasocia</strong> · Prototipo pedagógico inicial</span><span>Basado en la tesis doctoral de Ibeth Patricia Ruiz Olea · Versión de diseño, pendiente de validación</span></footer>
+</body>
+</html>
