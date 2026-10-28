@@ -1,5 +1,19 @@
 # Coasocia · Organización de la plataforma
 
+## Centro de Gestión – Ibeth Ruiz (octubre de 2026)
+
+La cuenta original `docente01` conserva su usuario, PIN e ID de D1 y ahora representa un perfil **administrador efectivo**, separado del panel docente. D1 conserva por compatibilidad el valor legado `role='docente'`, debido a una restricción CHECK en la tabla original; la API `/api/auth` expone el rol `administrador` cuando el servidor reconoce el ID de la primera cuenta docente, mediante `isAdministrator()`. No se requiere migración ni se modifican las contraseñas, sesiones de otros usuarios o datos registrados.
+
+Su espacio es **Centro de Gestión – Ibeth Ruiz** y presenta Resumen general, Docentes, Estudiantes y Grupos. Los permisos de acceso, la exclusión de actividades y la administración de cuentas se verifican desde Pages Functions, nunca solo ocultando botones. Sus grupos anteriores, si existen, pueden reasignarse a un docente activo desde el panel administrativo; mientras no se reasignen, se bloquea el registro de nuevos estudiantes por esos códigos.
+
+El administrador consulta docentes, grupos y estudiantes, puede invitar profesores, modificar usuarios y generar PIN nuevos, desactivar/reactivar cuentas y reasignar grupos conservando avances. La eliminación de cuentas con grupos o progreso se bloquea, priorizando su conservación. La gestión sensible requiere la clave `ADMIN_SETUP_KEY` almacenada como Secret en Cloudflare, que debe mantenerse privada.
+
+Archivos nuevos: `admin-ui.js`, `functions/api/admin-overview.js` y `functions/api/admin-progress.js`; interfaces y permisos actualizados en `panel.html`, `panel.js`, `dashboard.css`, `functions/_lib/security.js` y endpoints relacionados. Los profesores invitados mantienen su panel normal; los estudiantes conservan todas las unidades, actividades y su progreso. No hay migración D1 ni creación de un nuevo repositorio.
+
+**Estado de verificación:** código y permisos comprobados, faltan pruebas directas con cuentas de ensayo y revisión del despliegue de Cloudflare Pages.
+
+---
+
 ## Gestión de docentes desde Coordinación (octubre de 2026)
 
 El docente que activó primero la plataforma conserva la responsabilidad de coordinación. El control de privilegios se comprueba en el servidor utilizando la primera cuenta docente registrada, sin depender del primer docente que permanezca activo.
