@@ -1,4 +1,4 @@
-import {response,error,now,dbReady,validOrigin,input,userName,passwordOK,digest,hashPassword,verifyPassword,constantCompare,createSession,clearCookie,activeUser,removeSession,locked,failure,clearFailures} from '../_lib/security.js';
+import {response,error,now,dbReady,validOrigin,input,userName,passwordOK,digest,hashPassword,verifyPassword,constantCompare,createSession,clearCookie,activeUser,removeSession} from '../_lib/security.js';
 
 export async function onRequestGet({request,env}){
  if(!dbReady(env))return error('El acceso está pendiente de conexión con D1.',503);
@@ -18,19 +18,17 @@ export async function onRequestPost({request,env}){
   }
   if(data.action==='login'){
    const username=userName(data.username);
-   if(!username||typeof data.password!=='string'||data.password.length>128)return error('Usuario o contraseña incorrectos.',401);
-   if(await locked(env,username))return error('Demasiados intentos. Vuelve a intentarlo más tarde.',429);
+   if(!username||typeof data.password!=='string'||!passwordOK(data.password))return error('Usuario o PIN incorrectos.',401);
    const user=await env.DB.prepare('SELECT * FROM users WHERE username=? AND active=1').bind(username).first();
    const valid=user&&await verifyPassword(data.password,user);
-   if(!valid){await failure(env,username);return error('Usuario o contraseña incorrectos.',401)}
-   await clearFailures(env,username);
+   if(!valid)return error('Usuario o PIN incorrectos.',401);
    const session=await createSession(env,user.id);
    return response({ok:true,user:{username:user.username,role:user.role}},200,{'set-cookie':session});
   }
   if(data.action==='register'){
    const username=userName(data.username);
    const code=typeof data.classCode==='string'?data.classCode.toUpperCase().replace(/[^A-Z0-9]/g,''):'';
-   if(!username||!passwordOK(data.password)||!/^[A-Z0-9]{16}$/.test(code))return error('Necesitas un seudónimo válido, una contraseña de 10 caracteres y un código de clase.');
+   if(!username||!passwordOK(data.password)||!/^[A-Z0-9]{16}$/.test(code))return error('Necesitas un seudónimo válido, un PIN de 4 dígitos y un código de clase.');
    const cls=await env.DB.prepare('SELECT id FROM classes WHERE join_code_hash=? AND active=1').bind(await digest(code)).first();
    if(!cls)return error('El código de clase no es válido.',403);
    const existing=await env.DB.prepare('SELECT id FROM users WHERE username=?').bind(username).first();
@@ -45,7 +43,7 @@ export async function onRequestPost({request,env}){
   }
   if(data.action==='setup'){
    const username=userName(data.username);
-   if(!username||!passwordOK(data.password,true))return error('Usuario válido y contraseña docente de mínimo 12 caracteres.');
+   if(!username||!passwordOK(data.password,true))return error('Usuario válido y PIN docente de 4 dígitos.');
    const secret=env.ADMIN_SETUP_KEY;
    if(typeof secret!=='string'||secret.length<24)return error('Falta configurar ADMIN_SETUP_KEY en Cloudflare.',503);
    if(!await constantCompare(data.setupKey,secret))return error('Clave de activación incorrecta.',403);

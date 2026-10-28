@@ -10,8 +10,8 @@ export function dbReady(env){return Boolean(env?.DB?.prepare)}
 export function validOrigin(request){const o=request.headers.get('origin');return !!o && o===new URL(request.url).origin}
 export async function input(request){
  if(!request.headers.get('content-type')?.toLowerCase().includes('application/json'))throw Error('Formato incorrecto');
- if(Number(request.headers.get('content-length')||0)>4096)throw Error('Exceso de datos');
- const raw=await request.text();if(raw.length>4096)throw Error('Exceso de datos');
+ if(Number(request.headers.get('content-length')||0)>8192)throw Error('Exceso de datos');
+ const raw=await request.text();if(raw.length>8192)throw Error('Exceso de datos');
  const obj=JSON.parse(raw);if(!obj||typeof obj!=='object'||Array.isArray(obj))throw Error('Datos incorrectos');
  return obj;
 }
@@ -19,7 +19,7 @@ export function userName(v){
  const s=typeof v==='string'?v.trim().toLowerCase():'';
  return /^[a-z0-9][a-z0-9._-]{3,23}$/.test(s)?s:null;
 }
-export function passwordOK(v,teacher=false){return typeof v==='string'&&v.length>=(teacher?12:10)&&v.length<=128}
+export function passwordOK(v){return typeof v==='string'&&/^[0-9]{4}$/.test(v)}
 export function random(n=32){
  const b=crypto.getRandomValues(new Uint8Array(n));let s='';for(const x of b)s+=String.fromCharCode(x);
  return btoa(s).replaceAll('+','-').replaceAll('/','_').replaceAll('=','');
@@ -71,17 +71,4 @@ export async function removeSession(env,request){
  const token=cookie(request);
  if(token)await env.DB.prepare('DELETE FROM sessions WHERE token_hash=?').bind(await digest(token)).run();
 }
-async function failureKey(user){return digest('login:'+user)}
-export async function locked(env,user){
- const row=await env.DB.prepare('SELECT fails,reset_at FROM auth_failures WHERE key=?').bind(await failureKey(user)).first();
- return !!row&&row.fails>=6&&row.reset_at>now();
-}
-export async function failure(env,user){
- const key=await failureKey(user),t=now();
- const row=await env.DB.prepare('SELECT fails,reset_at FROM auth_failures WHERE key=?').bind(key).first();
- if(row&&row.reset_at>t)await env.DB.prepare('UPDATE auth_failures SET fails=fails+1 WHERE key=?').bind(key).run();
- else await env.DB.prepare('INSERT INTO auth_failures(key,fails,reset_at) VALUES (?,?,?) ON CONFLICT(key) DO UPDATE SET fails=excluded.fails,reset_at=excluded.reset_at').bind(key,1,t+900).run();
-}
-export async function clearFailures(env,user){
- await env.DB.prepare('DELETE FROM auth_failures WHERE key=?').bind(await failureKey(user)).run();
-}
+// No se aplica bloqueo de cuentas por fallos. Se recomienda protección antibots en Cloudflare.
