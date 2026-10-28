@@ -4,9 +4,10 @@ const roles=[...document.querySelectorAll('[data-role]')];
 const tabs=[...document.querySelectorAll('[data-mode]')];
 let role=new URLSearchParams(location.search).get('rol')==='docente'?'docente':'estudiante';
 let mode='login';
+let firstTeacherAvailable=true;
 function render(){
   roles.forEach(b=>{const active=b.dataset.role===role;b.classList.toggle('selected',active);b.setAttribute('aria-pressed',String(active));});
-  const modes=role==='docente'?['login','register_teacher','setup']:['login','register'];
+  const modes=role==='docente'?(firstTeacherAvailable?['login','register_teacher','setup']:['login','register_teacher']):['login','register'];
   if(!modes.includes(mode))mode='login';
   tabs.forEach(b=>{b.hidden=!modes.includes(b.dataset.mode);b.classList.toggle('selected',b.dataset.mode===mode)});
   ['login','register','register_teacher','setup'].forEach(k=>$('#form-'+k).hidden=mode!==k);
@@ -40,6 +41,8 @@ for(const action of ['login','register','register_teacher','setup']){
   const response=await fetch('/api/auth',{cache:'no-store',credentials:'same-origin'});
   const data=await response.json();
   if(!response.ok){$('#service-status').textContent='Configuración pendiente: '+(data.error||'revisa la base de datos');return}
+  firstTeacherAvailable=data.setupAvailable!==false;
+  render();
   $('#service-status').textContent='Acceso disponible · Sesiones protegidas';
   if(data.user)location.assign('/panel.html');
  }catch{$('#service-status').textContent='Acceso en preparación: no se detecta el servicio de autenticación.'}

@@ -4,13 +4,14 @@ export async function onRequestGet({request,env}){
  if(!dbReady(env))return error('El acceso está pendiente de conexión con D1.',503);
  try{
   const user=await activeUser(env,request);
-  if(!user)return response({ok:true,user:null});
+  const docentes=await env.DB.prepare("SELECT COUNT(*) AS total FROM users WHERE role='docente'").first();
+  if(!user)return response({ok:true,user:null,setupAvailable:docentes.total===0});
   let coordinator=false;
   if(user.role==='docente'){
    const first=await env.DB.prepare("SELECT id FROM users WHERE role='docente' AND active=1 ORDER BY created_at,id LIMIT 1").first();
    coordinator=first?.id===user.id;
   }
-  return response({ok:true,user:{username:user.username,role:user.role,coordinator}});
+  return response({ok:true,user:{username:user.username,role:user.role,coordinator},setupAvailable:docentes.total===0});
  }catch{return error('Es necesario inicializar la base D1.',503)}
 }
 export async function onRequestPost({request,env}){
