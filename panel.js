@@ -33,20 +33,38 @@ async function loadClasses(){
    const box=document.createElement('div');box.className='class-item';
    const name=document.createElement('strong');name.textContent=c.name;
    const count=document.createElement('span');count.textContent='Participantes: '+c.students;
-   box.append(name,count);target.append(box);
+   const renew=document.createElement('button');renew.type='button';renew.className='link-button';renew.textContent='Nuevo código';
+   renew.setAttribute('aria-label','Generar nuevo código para '+c.name);
+   renew.addEventListener('click',async()=>{
+    if(!window.confirm('¿Generar un nuevo código para '+c.name+'? El anterior dejará de funcionar, pero se conservarán los estudiantes.'))return;
+    renew.disabled=true;
+    try{const result=await post('/api/classes',{action:'renew_code',id:c.id});showClassCode(result.code,c.name,true)}
+    catch(err){$('#class-result').textContent=err.message||'No se pudo renovar el código.'}
+    finally{renew.disabled=false}
+   });
+   box.append(name,count,renew);target.append(box);
   }
  }catch(err){$('#class-list').textContent=err.message||'No fue posible cargar las clases.'}
 }
+function showClassCode(code,className,renewed=false){
+ const target=$('#class-result');target.replaceChildren();
+ const lead=document.createElement('p');
+ lead.textContent=(renewed?'Nuevo código de ':'Código de ')+className+' para compartir con estudiantes:';
+ const value=document.createElement('strong');value.textContent=code;
+ const note=document.createElement('p');
+ note.textContent=(renewed?'El código anterior quedó invalidado. ':'')+'Este código se muestra una sola vez. Consérvalo antes de salir.';
+ target.append(lead,value,note);
+}
 $('#class-form').addEventListener('submit',async e=>{
- e.preventDefault();const name=new FormData(e.currentTarget).get('name');
- const button=e.currentTarget.querySelector('button');button.disabled=true;
+ e.preventDefault();
+ const form=e.currentTarget;
+ const name=new FormData(form).get('name');
+ const button=form.querySelector('button');button.disabled=true;
  try{
   const data=await post('/api/classes',{action:'create',name});
-  const target=$('#class-result');target.replaceChildren();
-  const lead=document.createElement('p');lead.textContent='Código para compartir con tus estudiantes (cópialo ahora):';
-  const code=document.createElement('strong');code.textContent=data.code;
-  const note=document.createElement('p');note.textContent='El código no se volverá a mostrar por seguridad.';
-  target.append(lead,code,note);e.currentTarget.reset();await loadClasses();
+  showClassCode(data.code,name);
+  form.reset();
+  await loadClasses();
  }catch(err){$('#class-result').textContent=err.message||'No se pudo crear la clase.'}
  finally{button.disabled=false}
 });
