@@ -7,7 +7,7 @@ export async function onRequestPost({request,env}){
  try {
   const user=await activeUser(env,request);
   if(user?.role!=='docente')return error('Solo la coordinación docente puede invitar.',403);
-  const first=await env.DB.prepare("SELECT id FROM users WHERE role='docente' AND active=1 ORDER BY created_at,id LIMIT 1").first();
+  const first=await env.DB.prepare("SELECT id FROM users WHERE role='docente' ORDER BY created_at,id LIMIT 1").first();
   if(first?.id!==user.id)return error('Solo el primer docente puede invitar a otros profesores.',403);
   const data=await input(request);
   if(data.action!=='create')return error('Acción no reconocida.');
