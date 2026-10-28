@@ -4,7 +4,13 @@ export async function onRequestGet({request,env}){
  if(!dbReady(env))return error('El acceso está pendiente de conexión con D1.',503);
  try{
   const user=await activeUser(env,request);
-  return response({ok:true,user:user?{username:user.username,role:user.role}:null});
+  if(!user)return response({ok:true,user:null});
+  let coordinator=false;
+  if(user.role==='docente'){
+   const first=await env.DB.prepare("SELECT id FROM users WHERE role='docente' AND active=1 ORDER BY created_at,id LIMIT 1").first();
+   coordinator=first?.id===user.id;
+  }
+  return response({ok:true,user:{username:user.username,role:user.role,coordinator}});
  }catch{return error('Es necesario inicializar la base D1.',503)}
 }
 export async function onRequestPost({request,env}){
@@ -40,6 +46,27 @@ export async function onRequestPost({request,env}){
     .bind(uid,username,'estudiante',record.hash,record.salt,record.iterations,cls.id,now()).run();
    const session=await createSession(env,uid);
    return response({ok:true,user:{username,role:'estudiante'}},201,{'set-cookie':session});
+  }
+  if(data.action==='register_teacher'){
+   const username=userName(data.username);
+   const code=typeof data.inviteCode==='string'?data.inviteCode.trim():'';
+   if(!username||!passwordOK(data.password)||!/^[A-Za-z0-9_-]{24}$/.test(code)){
+    return error('Se requiere usuario, PIN de cuatro dígitos y una invitación válida.');
+   }
+   const hash=await digest(code),t=now(),id=crypto.randomUUID();
+   const record=await hashPassword(data.password);
+   // Dos consultas transaccionales: la inscripción solo ocurre si el código está vigente
+   // y sin consumir; después se registra la persona que utilizó la invitación.
+   const statements=[
+    env.DB.prepare("INSERT INTO users(id,username,role,password_hash,salt,iterations,created_at) SELECT ?,?,'docente',?,?,?,? WHERE EXISTS(SELECT 1 FROM teacher_invites WHERE code_hash=? AND used_at IS NULL AND expires_at>?)")
+     .bind(id,username,record.hash,record.salt,record.iterations,t,hash,t),
+    env.DB.prepare('UPDATE teacher_invites SET used_at=?,used_by=? WHERE code_hash=? AND used_at IS NULL AND expires_at>? AND EXISTS(SELECT 1 FROM users WHERE id=?)')
+     .bind(t,id,hash,t,id)
+   ];
+   const results=await env.DB.batch(statements);
+   if(results?.[0]?.meta?.changes!==1||results?.[1]?.meta?.changes!==1)return error('Invitación inválida, caducada o utilizada.',403);
+   const cookie=await createSession(env,id);
+   return response({ok:true,user:{username,role:'docente'}},201,{'set-cookie':cookie});
   }
   if(data.action==='setup'){
    const username=userName(data.username);
