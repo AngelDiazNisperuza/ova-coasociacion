@@ -79,3 +79,20 @@ En la franja visual del reto aparecen dos accesos de demostración. **Estudiante
 - En Cloudflare Pages > Settings > Bindings, añadir binding D1 con nombre exacto DB, seleccionar esa base y realizar un nuevo despliegue. En Settings > Variables and Secrets establecer ADMIN_SETUP_KEY como secreto, disponible en producción, y volver a desplegar.
 - Hasta completar estos pasos, la interfaz mostrará un mensaje de configuración pendiente. NO se deben prometer cuentas funcionales antes de probar el acceso real.
 - No se almacenan nombres reales, documentos de identidad ni calificaciones. La implementación para uso con menores requiere revisión de privacidad, autorizaciones institucionales y políticas de retención.
+
+
+## Acceso simplificado y seguimiento (versión 0.6)
+
+El registro y acceso de estudiantes y docentes exige un PIN numérico de exactamente 4 dígitos. Los usuarios se identifican con seudónimo de 4 a 24 caracteres. El PIN se almacena mediante un hash PBKDF2 con sal aleatoria, sin guardar el PIN en texto claro.
+
+Se retiró el bloqueo temporal de cuentas por intentos fallidos. ADVERTENCIA: un PIN de cuatro dígitos ofrece solamente 10 000 combinaciones y es débil para una web pública. Antes de habilitarlo con estudiantes reales, deben incorporarse medidas contra intentos automatizados mediante las opciones de seguridad de Cloudflare, limitando el sistema a datos formativos no sensibles.
+
+En el panel docente, Gestión de estudiantes permite editar el nombre de usuario, generar un PIN nuevo de cuatro dígitos y eliminar la cuenta. El PIN nuevo se muestra una sola vez, las sesiones antiguas se revocan y las respuestas de aprendizaje permanecen asociadas a la misma cuenta. La eliminación de una cuenta es irreversible y borra su historial. El servidor comprueba que cada estudiante pertenece a una clase del docente autenticado.
+
+## Persistencia del progreso
+
+La migración migrations/0002_progreso.sql crea la tabla activity_progress sin modificar ni eliminar datos en las cuatro tablas anteriores. Debe ejecutarse en la consola de la base D1 ova-coasociacion-db.
+
+La página principal utiliza progress.js para recuperar y guardar automáticamente las respuestas a las dos preguntas, las tres reflexiones abiertas y los niveles de autoevaluación. También tiene el botón Guardar avance. Sin sesión iniciada, la actividad es pública y no almacena respuestas en D1. Con una sesión iniciada, los datos se vinculan con el identificador interno de la cuenta. Restablecer el PIN conserva el identificador y por tanto mantiene el progreso.
+
+Antes de usar este sistema con menores, obtener las aprobaciones institucionales necesarias, definir conservación de datos y verificar una protección antiautomatización. No pedir nombres reales, documentos, calificaciones oficiales ni información sensible.
