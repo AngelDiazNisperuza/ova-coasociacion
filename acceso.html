@@ -14,6 +14,11 @@
 <div class="privacy">Para proteger a los estudiantes, utiliza un seudónimo. No introduzcas apellidos, documentos ni datos personales en el registro.</div>
 </section>
 <section class="auth-card">
+<div id="active-session" class="status" hidden aria-live="polite">
+<p>Hay una sesión abierta como <strong id="active-session-user"></strong> (<span id="active-session-role"></span>).</p>
+<a class="action action-link" href="/panel.html">Continuar en mi espacio</a>
+<button class="link-button" type="button" id="switch-account">Cambiar de cuenta</button>
+</div>
 <div class="tabs" role="group" aria-label="Modalidad de acceso"><button type="button" class="tab selected" data-mode="login">Iniciar sesión</button><button type="button" class="tab" data-mode="register">Crear cuenta</button><button type="button" class="tab" data-mode="register_teacher" hidden>Crear cuenta docente</button><button type="button" class="tab" data-mode="setup" hidden>Primer docente</button></div>
 <div class="status" id="service-status" role="status" aria-live="polite">Comprobando disponibilidad del acceso…</div>
 <form id="form-login" autocomplete="on"><h2>Bienvenido a Coasocia</h2><p>Ingresa con tu usuario y PIN de cuatro dígitos.</p><label>Usuario<input name="username" autocomplete="username" minlength="4" maxlength="24" pattern="[A-Za-z0-9._-]+" required></label><label>PIN de 4 dígitos<input name="password" type="password" inputmode="numeric" pattern="[0-9]{4}" minlength="4" maxlength="4" autocomplete="current-password" required></label><button class="action" type="submit">Ingresar al espacio</button></form>
