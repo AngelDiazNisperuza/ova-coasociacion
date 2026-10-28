@@ -16,9 +16,11 @@ async function load(){
   $('#subtitle').textContent=teacher?'Área de acompañamiento y administración de clases.':'Área de aprendizaje y actividades colaborativas.';
   $('#teacher-panel').hidden=!teacher;
   $('#student-panel').hidden=teacher;
+  document.querySelectorAll('[data-for]').forEach(el=>{el.hidden=(el.dataset.for==='docente'&&!teacher)||(el.dataset.for==='estudiante'&&teacher)||(el.dataset.for==='coordinador'&&!(teacher&&data.user.coordinator));});
   $('#dashboard').hidden=false;$('#loading').hidden=true;
+  showView('inicio');
   $('#coord-panel').hidden=!(teacher&&data.user.coordinator);
-  if(teacher){await loadClasses();await loadStudents();}
+  if(teacher){await loadClasses();await loadStudents();}else{await loadOwnProgress();}
  }catch(err){$('#loading-message').textContent=err.message||'No se pudo verificar la sesión.'}
 }
 async function loadClasses(){
@@ -61,7 +63,7 @@ const missions=[
  'Coasociación: acuerda con tu equipo una decisión y explica cómo llegaron al consenso.'
 ];
 let turning=false,rotation=0;
-$('#spin').addEventListener('click',()=>{
+$('#spin')?.addEventListener('click',()=>{
  if(turning)return;turning=true;
  const index=crypto.getRandomValues(new Uint32Array(1))[0]%missions.length;
  rotation+=720+360*(index/missions.length)+27;
@@ -175,4 +177,34 @@ async function showStudentProgress(id,name){
   out.append(dl);
   out.scrollIntoView({behavior:'smooth',block:'nearest'});
  }catch(e){const p=document.createElement('p');p.textContent=e.message||'Error de consulta';out.append(p)}
+}
+
+
+// Panel compacto: una sola sección visible, distinta para cada perfil.
+function showView(name){
+ const btn=[...document.querySelectorAll('[data-view-button]')].find(b=>b.dataset.viewButton===name&&!b.hidden);
+ if(!btn)return;
+ document.querySelectorAll('.dash-view').forEach(block=>{block.hidden=block.dataset.view!==name});
+ document.querySelectorAll('[data-view-button]').forEach(b=>{const active=b.dataset.viewButton===name;b.classList.toggle('selected',active);b.setAttribute('aria-current',active?'page':'false')});
+ window.scrollTo({top:0,behavior:'smooth'});
+}
+document.querySelectorAll('[data-view-button]').forEach(btn=>btn.addEventListener('click',()=>showView(btn.dataset.viewButton)));
+document.querySelectorAll('[data-go]').forEach(btn=>btn.addEventListener('click',()=>showView(btn.dataset.go)));
+async function loadOwnProgress(){
+ const node=document.querySelector('#own-progress');if(!node)return;
+ try{
+  const r=await fetch('/api/progress',{credentials:'same-origin',cache:'no-store'});
+  const data=await r.json();
+  if(!r.ok||!data.ok)throw Error(data.error||'No se pudo consultar el avance');
+  if(!data.progress){node.textContent='Todavía no has guardado respuestas. Abre la primera unidad para comenzar.';return}
+  const p=data.progress;
+  const answerCount=['q1','q2'].filter(k=>!!p.radio?.[k]).length+
+   ['evidencia','dialogo','propuesta'].filter(k=>!!p.fields?.[k]?.trim()).length+
+   [0,1,2,3].filter(i=>!!p.rubric?.['skill-'+i]).length;
+  node.replaceChildren();
+  const strong=document.createElement('strong');strong.textContent='Avance recuperado';
+  const detail=document.createElement('p');detail.textContent='Campos respondidos: '+answerCount+' de 9';
+  const date=document.createElement('p');date.textContent=data.updatedAt?'Última actualización: '+new Date(data.updatedAt*1000).toLocaleString('es-CO'):'';
+  node.append(strong,detail,date);
+ }catch(e){node.textContent=e.message||'No fue posible mostrar el avance.'}
 }

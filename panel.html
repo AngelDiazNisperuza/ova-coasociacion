@@ -1,12 +1,45 @@
-<!doctype html><html lang="es"><head>
-<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="theme-color" content="#0d234c"><title>Mi espacio | Coasocia</title>
-<link rel="stylesheet" href="/auth.css"><script src="/panel.js" defer></script>
+<!doctype html><html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#0d234c">
+<meta name="description" content="Panel personal Coasocia para estudiantes y docentes.">
+<title>Mi espacio | Coasocia</title><link rel="stylesheet" href="/auth.css"><link rel="stylesheet" href="/dashboard.css"><script src="/panel.js" defer></script>
 </head><body>
-<header class="top"><a class="identity" href="/"><span class="logomark" aria-hidden="true">◈</span><span><strong>coasocia</strong><small>LABORATORIO DE HABILIDADES</small></span></a><nav class="header-actions"><a class="back" href="/">OVA público</a><button id="logout" class="link-button" type="button">Cerrar sesión</button></nav></header>
+<header class="top"><a class="identity" href="/"><span class="logomark" aria-hidden="true">◈</span><span><strong>coasocia</strong><small>LABORATORIO DE HABILIDADES</small></span></a><nav class="header-actions"><a class="back" href="/">Portada</a><button id="logout" class="link-button" type="button">Cerrar sesión</button></nav></header>
 <main class="dashboard" id="dashboard" hidden>
-<div class="dashboard-hero"><span class="kicker">ESPACIO PERSONAL</span><h1 id="welcome">Tu espacio Coasocia</h1><p id="subtitle">Aprendizaje activo y construcción compartida.</p></div>
-<section id="teacher-panel" hidden aria-labelledby="teacher-title">
+<div class="dashboard-hero"><span class="kicker">MI ESPACIO</span><h1 id="welcome">Bienvenido a Coasocia</h1><p id="subtitle">Aprender y construir juntos.</p></div>
+<nav class="dash-tabs" aria-label="Secciones de mi espacio">
+<button type="button" data-view-button="inicio" class="selected">Inicio</button>
+<button type="button" data-view-button="unidades">Unidades didácticas</button>
+<button type="button" data-view-button="actividades">Actividades</button>
+<button type="button" data-view-button="progreso" data-for="estudiante" hidden>Mi aprendizaje</button>
+<button type="button" data-view-button="recursos">Recursos</button>
+<button type="button" data-view-button="grupos" data-for="docente" hidden>Mis grupos</button>
+<button type="button" data-view-button="coordinacion" data-for="coordinador" hidden>Coordinación</button>
+</nav>
+<section class="dash-view" data-view="inicio"><h2>¿Qué deseas hacer?</h2><p>Selecciona un espacio de trabajo. Los contenidos se abren cuando los necesitas.</p><div class="quick-grid">
+<button type="button" class="quick-card" data-go="unidades"><span class="quick-tag">APRENDER</span><strong>Unidades didácticas</strong><span>Abre el contenido que corresponde a tu trabajo.</span></button>
+<button type="button" class="quick-card" data-go="actividades"><span class="quick-tag">PRACTICAR</span><strong>Actividades interactivas</strong><span>Accede a retos y desafíos colaborativos.</span></button>
+<button type="button" class="quick-card" data-go="recursos"><span class="quick-tag">CONSULTAR</span><strong>Lecturas y recursos</strong><span>Amplía tus ideas con materiales breves.</span></button>
+<button type="button" class="quick-card" data-go="grupos" data-for="docente" hidden><span class="quick-tag">ORIENTAR</span><strong>Mis grupos</strong><span>Administra participantes y consulta avances.</span></button>
+<button type="button" class="quick-card" data-go="progreso" data-for="estudiante" hidden><span class="quick-tag">CONTINUAR</span><strong>Mi aprendizaje</strong><span>Recupera las respuestas de tu última sesión.</span></button>
+</div></section>
+<section class="dash-view" data-view="unidades" hidden><h2>Unidades didácticas</h2><p>Explora cada unidad desde su propia página, sin recorrer todos los contenidos de una vez.</p><div class="module-list">
+<article class="module-card"><span class="quick-tag">UNIDAD 01</span><h3>El cuidado del agua en la comunidad escolar</h3><p>Explora una situación cotidiana mediante preguntas, datos y reflexión compartida.</p><a class="action action-link" href="/aula.html#reto">Abrir unidad</a></article>
+<article class="module-card soon"><span class="quick-tag">EN PREPARACIÓN</span><h3>Otras experiencias interdisciplinarias</h3><p>Se incorporarán gradualmente según la planeación docente.</p></article></div></section>
+<section class="dash-view" data-view="actividades" hidden><h2>Actividades interactivas</h2><p>Selecciona una actividad para abrirla en el aula. Tu avance se guarda en tu cuenta.</p><div class="module-list">
+<article class="module-card"><span class="quick-tag">RETO 01</span><h3>Investigar un problema</h3><p>Plantea preguntas para interpretar una situación.</p><a class="action action-link" href="/aula.html#paso-1">Abrir actividad</a></article>
+<article class="module-card"><span class="quick-tag">RETO 02</span><h3>Leer información</h3><p>Interpreta datos para argumentar decisiones.</p><a class="action action-link" href="/aula.html#paso-2">Abrir actividad</a></article>
+<article class="module-card"><span class="quick-tag">RETO 03</span><h3>Dialogar en equipo</h3><p>Contrasta ideas y elabora una propuesta conjunta.</p><a class="action action-link" href="/aula.html#paso-3">Abrir actividad</a></article>
+<article class="module-card"><span class="quick-tag">RETO 04</span><h3>Reflexionar</h3><p>Registra qué aprendiste y cómo participaste.</p><a class="action action-link" href="/aula.html#paso-4">Abrir actividad</a></article>
+<article class="module-card"><span class="quick-tag">GAMIFICACIÓN</span><h3>Ruleta de habilidades</h3><p>Recibe una misión breve para conversar con tu equipo.</p><a class="action action-link" href="/aula.html#ruleta">Abrir ruleta</a></article>
+</div></section>
+<section class="dash-view" data-view="progreso" hidden data-for="estudiante"><h2>Mi aprendizaje</h2><p>Consulta tu último avance y retoma las actividades donde las dejaste.</p><div class="progress-summary" id="own-progress" role="status" aria-live="polite">Recuperando tu información…</div>
+<section id="student-panel" hidden><h2>Bienvenido a tu laboratorio</h2><p>Inicia el reto de aprendizaje y conversa con tu equipo sobre lo que descubran. Tu avance se guarda en D1 cuando estás conectado.</p><a class="action action-link" href="/aula.html#paso-1">Comenzar Reto 01</a></section>
+</section>
+<section class="dash-view" data-view="recursos" hidden><h2>Lecturas y materiales de apoyo</h2><p>Encuentra recursos de consulta breves. Cada lectura se abre cuando la seleccionas.</p>
+<details class="resource-card"><summary>Indagar y formular preguntas <span aria-hidden="true">⌄</span></summary><div><p>Antes de tomar una decisión, identifica lo que sabes y lo que falta comprobar. La observación y el registro de información aportan evidencias para dialogar con otras personas.</p><a class="action action-link" href="/aula.html#recursos">Abrir material en el aula</a></div></details>
+<details class="resource-card"><summary>Comunicación y trabajo compartido <span aria-hidden="true">⌄</span></summary><div><p>Escuchar razones, intercambiar perspectivas y revisar acuerdos contribuye a construir conocimiento con otras personas.</p><a class="action action-link" href="/aula.html#recursos">Abrir material en el aula</a></div></details>
+<details class="resource-card"><summary>Reflexión y propuestas <span aria-hidden="true">⌄</span></summary><div><p>Justifica tus propuestas, describe cómo podrían revisarse y expresa qué aprendiste durante la experiencia.</p><a class="action action-link" href="/aula.html#recursos">Abrir material en el aula</a></div></details>
+</section>
+<section class="dash-view" data-view="grupos" hidden data-for="docente"><section id="teacher-panel" hidden aria-labelledby="teacher-title">
 <h2 id="teacher-title">Administración docente</h2><p>Crea una clase y entrega su código de registro a tus estudiantes. El código se muestra una sola vez: consérvalo fuera del sitio.</p>
 <form id="class-form" class="create-class"><label>Nombre de clase<input name="name" maxlength="60" minlength="3" placeholder="Ej. Grado 10.º — Grupo A" required></label><button class="action" type="submit">Crear código de clase</button></form>
 <div id="class-result" class="class-result" role="status" aria-live="polite"></div>
@@ -17,17 +50,14 @@
 <div id="students-list" class="students-list"></div><div id="student-progress-detail" class="student-progress-detail" role="region" aria-label="Progreso del estudiante" aria-live="polite" hidden></div>
 </section>
 
-<section id="coord-panel" hidden aria-labelledby="coord-title">
+</section>
+<section class="dash-view" data-view="coordinacion" hidden data-for="coordinador"><section id="coord-panel" hidden aria-labelledby="coord-title">
 <h2 id="coord-title">Coordinación: invitar profesores</h2>
 <p>Este espacio corresponde al primer docente registrado. Genera un código temporal para que otro profesor cree su propia cuenta con PIN de cuatro dígitos. Los profesores invitados administran únicamente sus grupos.</p>
 <button id="make-teacher-invite" class="action" type="button">Generar invitación docente</button>
 <div id="teacher-invite-result" class="class-result" role="status" aria-live="polite"></div>
 </section>
-<section id="student-panel" hidden><h2>Bienvenido a tu laboratorio</h2><p>Inicia el reto de aprendizaje y conversa con tu equipo sobre lo que descubran. Tu avance se guarda en D1 cuando estás conectado.</p><a class="action action-link" href="/#paso-1">Comenzar Reto 01</a></section>
-<section class="roulette-section" aria-labelledby="roulette-title"><span class="kicker">GAMIFICACIÓN FORMATIVA</span><h2 id="roulette-title">Ruleta de habilidades transversales</h2><p>Gira la ruleta para recibir una misión de comunicación, colaboración, pensamiento crítico o resolución de problemas. La actividad no genera calificación.</p>
-<div class="roulette-wrap"><div class="wheel" id="wheel" aria-hidden="true"><span>COMUNICACIÓN</span><span>COLABORACIÓN</span><span>ANÁLISIS</span><span>PROPUESTAS</span></div><div class="roulette-actions"><button class="action" type="button" id="spin">Girar la ruleta</button><div id="mission" role="status" aria-live="polite" class="mission">Selecciona una misión para comenzar.</div></div></div>
 </section>
 </main>
-<main id="loading" class="dashboard"><div class="auth-card"><h1>Verificando tu sesión…</h1><p id="loading-message">Necesitas una cuenta para ingresar.</p><a href="/acceso.html">Ir al inicio de sesión</a></div></main>
-<footer>Coasocia · Actividades formativas, sin calificaciones automáticas</footer>
-</body></html>
+<main id="loading" class="dashboard"><div class="auth-card"><h1>Verificando tu sesión…</h1><p id="loading-message">El acceso requiere una cuenta.</p><a href="/acceso.html">Ingresar</a></div></main>
+<footer>Coasocia · Aprendizaje compartido</footer></body></html>
