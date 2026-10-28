@@ -1,6 +1,7 @@
 // Cloudflare Pages Functions: utilidades privadas, sin credenciales ni tokens en texto plano en D1.
 const encoder=new TextEncoder();
-const COOKIE='__Host-coasocia_session',ITER=210000,AGE=86400;
+// Cloudflare Workers limita PBKDF2 a 100000 iteraciones. Respetar este techo.
+const COOKIE='__Host-coasocia_session',ITER=100000,AGE=86400;
 export function response(data,status=200,extra={}){
  return new Response(JSON.stringify(data),{status,headers:{'content-type':'application/json; charset=utf-8','cache-control':'no-store','x-content-type-options':'nosniff',...extra}});
 }

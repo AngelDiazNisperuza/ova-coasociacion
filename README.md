@@ -82,7 +82,7 @@ En la franja visual del reto aparecen dos accesos de demostración. **Estudiante
 ## Autenticación con Pages Functions y D1 (fase 0.5)
 - Coasocia mantiene su sitio estático en Cloudflare Pages y añade funciones de servidor bajo functions/api/.
 - Acceso desde /acceso.html; panel de docentes y estudiantes en /panel.html.
-- Seudónimos para estudiantes; registro únicamente con un código de clase emitido por el docente; contraseñas con PBKDF2-SHA-256, sal aleatoria y 210 000 iteraciones; sesión con cookie HttpOnly, Secure y SameSite=Lax.
+- Seudónimos para estudiantes; registro únicamente con un código de clase emitido por el docente; contraseñas con PBKDF2-SHA-256, sal aleatoria y 100 000 iteraciones, máximo admitido por Cloudflare Workers; sesión con cookie HttpOnly, Secure y SameSite=Lax.
 - El primer docente se activa con una clave secreta configurada en Cloudflare bajo ADMIN_SETUP_KEY (mínimo 24 caracteres), nunca en GitHub.
 - Las clases tienen códigos de registro almacenados únicamente como hash, y se muestran una sola vez. Docentes administran clases desde un panel protegido; los estudiantes acceden con sus credenciales.
 - La ruleta es una actividad formativa inicial; no guarda progreso ni genera calificaciones ni registros de desempeño.
@@ -118,3 +118,8 @@ El primer docente se activa una sola vez con ADMIN_SETUP_KEY y se convierte en c
 El seguimiento requiere haber ejecutado también migrations/0002_progreso.sql. No se crean bases separadas por profesor; se comparten infraestructura y sitio web, con partición lógica estricta por identidad de docente y relaciones de clases. La separación depende de autorización en el servidor, no de ocultar elementos de la interfaz.
 
 El acceso con PIN de cuatro dígitos no debe emplearse con datos sensibles sin protección adicional ante intentos automatizados. La aceptación institucional, avisos de privacidad y consentimiento o asentimiento cuando corresponda deben verificarse antes de utilizar usuarios reales menores de edad.
+
+
+## Corrección de activación inicial
+
+El despliegue inicial solicitaba 210000 iteraciones de PBKDF2, pero el entorno Cloudflare Workers limita el número admitido a 100000, lo que impedía la creación del primer docente y devolvía un mensaje genérico de error de base de datos. A partir de esta revisión, el código emplea 100000 iteraciones. Las cuentas creadas correctamente almacenan su número de iteraciones individual, por lo que el verificador utiliza el valor guardado por usuario. La activación debe probarse tras un despliegue nuevo. PIN de 4 dígitos en una web pública es débil; es necesario proteger los intentos automatizados antes del uso con menores.
