@@ -1,6 +1,6 @@
 'use strict';
 
-// Prototipo estático: no hay sesiones, analítica, almacenamiento ni solicitudes de red.
+// Actividades públicas sin calificación automática; el guardado voluntario para usuarios registrados se gestiona desde progress.js.
 const answers = {
   evidencia: { value: 'b', correct: 'Correcto. Un diagnóstico reúne observaciones, registros y voces de la comunidad antes de tomar decisiones.', incorrect: 'Revisa el papel de la evidencia: una solución debe responder a lo que se ha investigado, no a una suposición.' },
   calculo: { value: 'c', correct: 'Correcto. El ejemplo registra 2 + 5 + 3 = 10 litros por día; en siete días serían 70 litros. Son datos simulados.', incorrect: 'Suma las pérdidas diarias de los tres grifos y multiplica el resultado por siete.' }

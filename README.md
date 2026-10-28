@@ -1,5 +1,16 @@
 # Coasocia — prototipo con diseño Academic Horizon 0.2
 
+
+## Estado actual (fase de cuentas y seguimiento)
+
+La página estática y la ruleta siguen disponibles públicamente en Cloudflare Pages. El módulo de acceso, administración de estudiantes y guardado de progreso utiliza Pages Functions y la base D1. La migración 0001 contiene las tablas de usuarios, clases, sesiones y autenticación; la migración 0002 agrega la tabla de progreso y debe aplicarse antes de guardar respuestas.
+
+La autenticación usa un PIN numérico de 4 dígitos para estudiantes y docentes, sin bloqueo temporal de cuentas por fallos. El servidor verifica los roles para las acciones administrativas; el docente solo puede gestionar los estudiantes de sus clases. El PIN nuevo se muestra una vez, no se conserva en texto claro y el cambio mantiene el progreso registrado. La eliminación definitiva borra la cuenta y sus actividades.
+
+**Límite de seguridad:** sin medidas antibots, PIN de 4 dígitos es débil en Internet. No utilizar datos personales o expedientes académicos; completar pruebas técnicas, aprobaciones institucionales y protección frente a intentos automatizados antes de utilizar la plataforma con menores.
+
+Las descripciones posteriores de la etapa estática son un registro histórico del prototipo inicial, no instrucciones vigentes para la funcionalidad de usuarios.
+
 ## Propósito
 
 Sitio web estático para probar una experiencia didáctica de coasociación con estudiantes de educación media académica (10.º y 11.º), a partir del capítulo V de la tesis doctoral *Propuesta didáctica hacia el fomento de habilidades transversales desde la pedagogía de la coasociación en estudiantes de educación media académica*, de Ibeth Patricia Ruiz Olea.
