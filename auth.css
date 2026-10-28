@@ -26,3 +26,7 @@
 #coord-panel{background:linear-gradient(115deg,#eff4ff,#f4faf7)!important}
 #teacher-invite-result strong{overflow-wrap:anywhere;font-size:19px;letter-spacing:.04em}
 @media(max-width:640px){.progress-list{grid-template-columns:1fr}.progress-list dt{padding-bottom:0}.progress-list dd{padding-top:0}}
+
+/* El selector de formularios se oculta mientras exista una sesión activa. */
+.auth-card .tabs[hidden],#active-session[hidden]{display:none!important}
+#active-session .action-link,#active-session .link-button{margin:6px 8px 6px 0}
