@@ -1,8 +1,8 @@
-import {response,error,dbReady,validOrigin,input,userName,hashPassword,activeUser,now} from '../_lib/security.js';
+import {response,error,dbReady,validOrigin,input,userName,hashPassword,activeUser,isAdministrator,now} from '../_lib/security.js';
 
 async function permission(env,request){
  const teacher=await activeUser(env,request);
- return teacher?.role==='docente' ? teacher : null;
+ return teacher?.role==='docente'&&!await isAdministrator(env,teacher)?teacher:null;
 }
 async function ownedStudent(env,teacherId,studentId){
  return env.DB.prepare("SELECT u.id,u.username,u.active,u.class_id,c.name AS class_name FROM users u JOIN classes c ON c.id=u.class_id WHERE u.id=? AND u.role='estudiante' AND c.teacher_id=?")

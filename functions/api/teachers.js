@@ -1,10 +1,8 @@
-import {response,error,dbReady,validOrigin,input,userName,hashPassword,activeUser,constantCompare} from '../_lib/security.js';
+import {response,error,dbReady,validOrigin,input,userName,hashPassword,activeUser,isAdministrator,constantCompare} from '../_lib/security.js';
 
 async function coordinator(env,request){
  const user=await activeUser(env,request);
- if(user?.role!=='docente')return null;
- const oldest=await env.DB.prepare("SELECT id FROM users WHERE role='docente' ORDER BY created_at,id LIMIT 1").first();
- return oldest?.id===user.id?user:null;
+ return await isAdministrator(env,user)?user:null;
 }
 function uuid(x){return typeof x==='string'&&/^[0-9a-f-]{36}$/i.test(x)}
 export async function onRequestGet({request,env}){
@@ -14,7 +12,7 @@ export async function onRequestGet({request,env}){
   if(!admin)return error('Acceso exclusivo a coordinación.',403);
   const u=await env.DB.prepare("SELECT id,username,active FROM users WHERE role='docente' ORDER BY created_at,id LIMIT 250").all();
   const c=await env.DB.prepare("SELECT c.id,c.teacher_id,c.name,c.active,COUNT(s.id) AS students FROM classes c LEFT JOIN users s ON s.class_id=c.id AND s.role='estudiante' GROUP BY c.id ORDER BY c.created_at DESC LIMIT 5000").all();
-  const teachers=(u.results||[]).map(t=>{
+  const teachers=(u.results||[]).filter(t=>t.id!==admin.id).map(t=>{
    const own=(c.results||[]).filter(x=>x.teacher_id===t.id);
    return {id:t.id,username:t.username,active:!!t.active,coordinator:t.id===admin.id,classCount:own.length,
     studentCount:own.reduce((sum,x)=>sum+Number(x.students||0),0),

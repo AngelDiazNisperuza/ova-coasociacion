@@ -1,10 +1,10 @@
-import {response,error,dbReady,activeUser} from '../_lib/security.js';
+import {response,error,dbReady,activeUser,isAdministrator} from '../_lib/security.js';
 
 export async function onRequestGet({request,env}){
  if(!dbReady(env))return error('Falta D1.',503);
  try{
   const teacher=await activeUser(env,request);
-  if(teacher?.role!=='docente')return error('Acceso exclusivo a docentes.',403);
+  if(teacher?.role!=='docente'||await isAdministrator(env,teacher))return error('Acceso exclusivo a docentes de grupo.',403);
   const id=new URL(request.url).searchParams.get('id');
   if(!id || !/^[a-f0-9-]{36}$/i.test(id))return error('Estudiante inválido.');
   const student=await env.DB.prepare("SELECT u.id,u.username,c.name AS class_name FROM users u JOIN classes c ON c.id=u.class_id WHERE u.id=? AND u.role='estudiante' AND c.teacher_id=?")
