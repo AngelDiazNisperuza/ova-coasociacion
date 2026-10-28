@@ -107,3 +107,14 @@ La migración migrations/0002_progreso.sql crea la tabla activity_progress sin m
 La página principal utiliza progress.js para recuperar y guardar automáticamente las respuestas a las dos preguntas, las tres reflexiones abiertas y los niveles de autoevaluación. También tiene el botón Guardar avance. Sin sesión iniciada, la actividad es pública y no almacena respuestas en D1. Con una sesión iniciada, los datos se vinculan con el identificador interno de la cuenta. Restablecer el PIN conserva el identificador y por tanto mantiene el progreso.
 
 Antes de usar este sistema con menores, obtener las aprobaciones institucionales necesarias, definir conservación de datos y verificar una protección antiautomatización. No pedir nombres reales, documentos, calificaciones oficiales ni información sensible.
+
+
+## Multi-docencia y privacidad de grupos (versión 0.7)
+
+El primer docente se activa una sola vez con ADMIN_SETUP_KEY y se convierte en coordinador; puede generar invitaciones de un solo uso con vigencia de 72 horas desde su panel. Un docente invitado entra a la pantalla "Crear cuenta docente" e introduce nombre de usuario, PIN numérico de cuatro dígitos y código temporal. No se comparte la clave de activación inicial.
+
+**Es obligatoria la migración migrations/0003_invitaciones_docentes.sql** en D1 para generar o consumir invitaciones. Cada docente crea grupos desde su panel; los estudiantes se vinculan con el código de clase. La API devuelve únicamente alumnos de los grupos del docente autenticado. La consulta de progreso de cada estudiante usa el mismo control de propiedad y no da acceso a estudiantes de otros docentes. El acceso del estudiante a su propio progreso continúa limitado a su sesión.
+
+El seguimiento requiere haber ejecutado también migrations/0002_progreso.sql. No se crean bases separadas por profesor; se comparten infraestructura y sitio web, con partición lógica estricta por identidad de docente y relaciones de clases. La separación depende de autorización en el servidor, no de ocultar elementos de la interfaz.
+
+El acceso con PIN de cuatro dígitos no debe emplearse con datos sensibles sin protección adicional ante intentos automatizados. La aceptación institucional, avisos de privacidad y consentimiento o asentimiento cuando corresponda deben verificarse antes de utilizar usuarios reales menores de edad.

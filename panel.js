@@ -17,6 +17,7 @@ async function load(){
   $('#teacher-panel').hidden=!teacher;
   $('#student-panel').hidden=teacher;
   $('#dashboard').hidden=false;$('#loading').hidden=true;
+  $('#coord-panel').hidden=!(teacher&&data.user.coordinator);
   if(teacher){await loadClasses();await loadStudents();}
  }catch(err){$('#loading-message').textContent=err.message||'No se pudo verificar la sesión.'}
 }
@@ -99,13 +100,15 @@ async function loadStudents(){
     if(!window.confirm('¿Generar un nuevo PIN para '+student.username+'? Se cerrarán sus sesiones y se conservará su progreso.'))return;
     await manageStudent({action:'reset_pin',id:student.id},true);
    });
+   const view=document.createElement('button');view.type='button';view.className='link-button';view.textContent='Ver progreso';
+   view.addEventListener('click',()=>showStudentProgress(student.id,student.username));
    const del=document.createElement('button');del.type='button';del.className='link-button danger';del.textContent='Eliminar';
    del.addEventListener('click',async()=>{
     const typed=window.prompt('ELIMINACIÓN DEFINITIVA. Se borrarán la cuenta y sus actividades. Escribe '+student.username+' para confirmar:');
     if(typed!==student.username)return;
     await manageStudent({action:'delete',id:student.id});
    });
-   actions.append(rename,reset,del);card.append(details,actions);target.append(card);
+   actions.append(view,rename,reset,del);card.append(details,actions);target.append(card);
   }
  }catch(e){status.textContent=e.message||'No se pudo consultar la lista.'}
 }
@@ -128,3 +131,48 @@ async function manageStudent(payload,showPin=false){
  }catch(e){message.textContent=e.message||'Operación no completada.'}
 }
 $('#refresh-students')?.addEventListener('click',loadStudents);
+
+
+// Las invitaciones solo pueden emitirse por el primer docente, comprobado en el servidor.
+$('#make-teacher-invite')?.addEventListener('click',async()=>{
+ const button=$('#make-teacher-invite'),box=$('#teacher-invite-result');
+ button.disabled=true;box.replaceChildren();
+ try{
+  const d=await post('/api/teacher-invites',{action:'create'});
+  const p=document.createElement('p');p.textContent='Código para un nuevo docente (un uso, 72 horas):';
+  const key=document.createElement('strong');key.textContent=d.code;
+  const note=document.createElement('p');note.textContent='Comparte el código en privado. El profesor debe abrir /acceso.html?rol=docente y seleccionar «Crear cuenta docente».';
+  box.append(p,key,note);
+ }catch(e){box.textContent=e.message||'No se pudo crear la invitación.'}
+ finally{button.disabled=false}
+});
+// Lectura protegida en la API: solo estudiantes de las clases del docente conectado.
+async function showStudentProgress(id,name){
+ const out=$('#student-progress-detail');
+ out.hidden=false;out.replaceChildren();
+ const heading=document.createElement('h3');heading.textContent='Avances de '+name;out.append(heading);
+ try{
+  const r=await fetch('/api/student-progress?id='+encodeURIComponent(id),{credentials:'same-origin',cache:'no-store'});
+  const info=await r.json();
+  if(!r.ok||!info.ok)throw Error(info.error||'No se pudo obtener el progreso.');
+  const group=document.createElement('p');group.textContent='Grupo: '+info.student.className;out.append(group);
+  if(!info.progress){const p=document.createElement('p');p.textContent='El estudiante todavía no ha guardado respuestas en el Reto 01.';out.append(p);return}
+  const date=document.createElement('p');
+  date.textContent='Última actualización: '+new Date(info.updatedAt*1000).toLocaleString('es-CO');out.append(date);
+  const items=[
+   ['Pregunta de investigación',info.progress.radio?.q1],
+   ['Cálculo con datos',info.progress.radio?.q2],
+   ['Evidencias',info.progress.fields?.evidencia],
+   ['Diálogo',info.progress.fields?.dialogo],
+   ['Propuesta del equipo',info.progress.fields?.propuesta],
+   ['Comunicación',info.progress.rubric?.['skill-0']],
+   ['Pensamiento crítico',info.progress.rubric?.['skill-1']],
+   ['Resolución de problemas',info.progress.rubric?.['skill-2']],
+   ['Colaboración',info.progress.rubric?.['skill-3']]
+  ];
+  const dl=document.createElement('dl');dl.className='progress-list';
+  for(const [key,value] of items){const dt=document.createElement('dt');dt.textContent=key;const dd=document.createElement('dd');dd.textContent=value||'Sin respuesta';dl.append(dt,dd)}
+  out.append(dl);
+  out.scrollIntoView({behavior:'smooth',block:'nearest'});
+ }catch(e){const p=document.createElement('p');p.textContent=e.message||'Error de consulta';out.append(p)}
+}

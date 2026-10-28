@@ -14,7 +14,14 @@
 <div class="students-header"><div><h3>Gestión de estudiantes</h3><p>Actualiza usuarios, genera un PIN nuevo o elimina una cuenta. Restablecer el PIN conserva las actividades guardadas; eliminar la cuenta borra esos datos de manera definitiva.</p></div>
 <button class="link-button" type="button" id="refresh-students">Actualizar lista</button></div>
 <div id="students-message" class="management-message" role="status" aria-live="polite"></div>
-<div id="students-list" class="students-list"></div>
+<div id="students-list" class="students-list"></div><div id="student-progress-detail" class="student-progress-detail" role="region" aria-label="Progreso del estudiante" aria-live="polite" hidden></div>
+</section>
+
+<section id="coord-panel" hidden aria-labelledby="coord-title">
+<h2 id="coord-title">Coordinación: invitar profesores</h2>
+<p>Este espacio corresponde al primer docente registrado. Genera un código temporal para que otro profesor cree su propia cuenta con PIN de cuatro dígitos. Los profesores invitados administran únicamente sus grupos.</p>
+<button id="make-teacher-invite" class="action" type="button">Generar invitación docente</button>
+<div id="teacher-invite-result" class="class-result" role="status" aria-live="polite"></div>
 </section>
 <section id="student-panel" hidden><h2>Bienvenido a tu laboratorio</h2><p>Inicia el reto de aprendizaje y conversa con tu equipo sobre lo que descubran. Tu avance se guarda en D1 cuando estás conectado.</p><a class="action action-link" href="/#paso-1">Comenzar Reto 01</a></section>
 <section class="roulette-section" aria-labelledby="roulette-title"><span class="kicker">GAMIFICACIÓN FORMATIVA</span><h2 id="roulette-title">Ruleta de habilidades transversales</h2><p>Gira la ruleta para recibir una misión de comunicación, colaboración, pensamiento crítico o resolución de problemas. La actividad no genera calificación.</p>

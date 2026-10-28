@@ -6,10 +6,10 @@ let role=new URLSearchParams(location.search).get('rol')==='docente'?'docente':'
 let mode='login';
 function render(){
   roles.forEach(b=>{const active=b.dataset.role===role;b.classList.toggle('selected',active);b.setAttribute('aria-pressed',String(active));});
-  const modes=role==='docente'?['login','setup']:['login','register'];
+  const modes=role==='docente'?['login','register_teacher','setup']:['login','register'];
   if(!modes.includes(mode))mode='login';
   tabs.forEach(b=>{b.hidden=!modes.includes(b.dataset.mode);b.classList.toggle('selected',b.dataset.mode===mode)});
-  ['login','register','setup'].forEach(k=>$('#form-'+k).hidden=mode!==k);
+  ['login','register','register_teacher','setup'].forEach(k=>$('#form-'+k).hidden=mode!==k);
   $('#form-message').textContent='';
 }
 roles.forEach(b=>b.addEventListener('click',()=>{role=b.dataset.role;mode='login';history.replaceState({},'',location.pathname+'?rol='+role);render()}));
@@ -20,7 +20,7 @@ async function api(action,fields){
   if(!response.ok || !payload.ok)throw Error(payload.error||'No fue posible completar el acceso.');
   return payload;
 }
-for(const action of ['login','register','setup']){
+for(const action of ['login','register','register_teacher','setup']){
   const form=$('#form-'+action);
   form.addEventListener('submit',async e=>{
     e.preventDefault();

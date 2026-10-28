@@ -15,3 +15,14 @@
 .management-message:not(:empty){padding:12px 14px;border:1px solid #bbd5e8;background:#eff4ff;border-radius:9px;margin:10px 0}
 .management-message strong{padding:3px 9px;border-radius:6px;letter-spacing:.12em;background:white;color:#0d234c}
 @media(max-width:700px){.student-item,.students-header{flex-direction:column;align-items:stretch}.student-actions{width:100%}}
+
+/* Administración multi-docente: invitaciones y revisión de avance sin exposición de contraseñas. */
+.student-progress-detail{margin-top:18px;padding:20px;border:1px solid #c5d5ec;background:#f3f7ff;border-radius:12px;white-space:pre-wrap;overflow-wrap:anywhere}
+.student-progress-detail h3{margin-top:0}
+.progress-list{display:grid;grid-template-columns:minmax(170px,.3fr) minmax(0,.7fr);gap:0;margin:0}
+.progress-list dt,.progress-list dd{margin:0;padding:10px;border-bottom:1px solid #dbe4ee}
+.progress-list dt{font-size:13px;font-weight:700;color:#0d234c}
+.progress-list dd{font-size:14px;color:#334155}
+#coord-panel{background:linear-gradient(115deg,#eff4ff,#f4faf7)!important}
+#teacher-invite-result strong{overflow-wrap:anywhere;font-size:19px;letter-spacing:.04em}
+@media(max-width:640px){.progress-list{grid-template-columns:1fr}.progress-list dt{padding-bottom:0}.progress-list dd{padding-top:0}}
