@@ -34,7 +34,7 @@ export async function onRequestPost({request,env}){
    const username=userName(data.username);
    const code=typeof data.classCode==='string'?data.classCode.toUpperCase().replace(/[^A-Z0-9]/g,''):'';
    if(!username||!passwordOK(data.password)||!/^[A-Z0-9]{16}$/.test(code))return error('Necesitas un seudónimo válido, un PIN de 4 dígitos y un código de clase.');
-   const cls=await env.DB.prepare('SELECT c.id FROM classes c JOIN users t ON t.id=c.teacher_id WHERE c.join_code_hash=? AND c.active=1 AND t.active=1').bind(await digest(code)).first();
+   const cls=await env.DB.prepare('SELECT c.id FROM classes c JOIN users t ON t.id=c.teacher_id WHERE c.join_code_hash=? AND c.active=1 AND t.active=1 AND c.teacher_id<>(SELECT id FROM users WHERE role=\'docente\' ORDER BY created_at,id LIMIT 1)').bind(await digest(code)).first();
    if(!cls)return error('El código de clase no es válido.',403);
    const existing=await env.DB.prepare('SELECT id FROM users WHERE username=?').bind(username).first();
    if(existing)return error('Ese usuario ya existe.',409);
