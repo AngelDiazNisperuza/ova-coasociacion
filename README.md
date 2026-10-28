@@ -1,5 +1,18 @@
 # Coasocia · Organización de la plataforma
 
+## Gestión de docentes desde Coordinación (octubre de 2026)
+
+El docente que activó primero la plataforma conserva la responsabilidad de coordinación. El control de privilegios se comprueba en el servidor utilizando la primera cuenta docente registrada, sin depender del primer docente que permanezca activo.
+
+En el panel de Coordinación se puede consultar a los profesores y sus grupos, editar el usuario, emitir un nuevo PIN, desactivar o reactivar cuentas. Para operaciones sensibles, además de la sesión del coordinador, se requiere la variable secreta `ADMIN_SETUP_KEY` que ya está configurada en Cloudflare. Esta clave no se almacena en GitHub ni se conserva en el navegador después de solicitar el cambio.
+
+La opción **Desactivar** invalida las sesiones del profesor y mantiene íntegros los grupos y el progreso estudiantil. **Reactivar** recupera el acceso sin eliminar esos registros. Mientras el docente esté desactivado, el sistema impide inscribir estudiantes nuevos en sus grupos. La opción **Eliminar** solo funciona si el profesor no tiene grupos ni avances u otras invitaciones creadas a su nombre. Las invitaciones que utilizó para incorporarse quedan marcadas como consumidas, aunque se anonimiza su referencia a la cuenta eliminada. Si tiene grupos, debe desactivarse y planificarse por separado una reasignación antes de una posible eliminación definitiva.
+
+API protegida: `functions/api/teachers.js`. La interfaz está en `panel.html` y `panel.js` con estilos de `dashboard.css`. No requiere cambios de esquema D1 y no modifica los grupos existentes. Probar en Cloudflare con cuentas de ensayo antes del uso institucional. Las contraseñas tipo PIN de cuatro dígitos requieren protección adicional frente a intentos automatizados.
+
+---
+
+
 ## Versión 0.8 · Portada pública y aula por perfiles
 
 - **/**: portada pública informativa, sin secuencia ni resultados de actividades. Tres bloques desplegables explican qué es el OVA, su funcionamiento general y a quién va dirigido.
