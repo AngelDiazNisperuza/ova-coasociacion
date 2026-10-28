@@ -45,6 +45,7 @@ for (let i = 0; i < skills.length; i++) {
 let beforeSummaryPrint=null;
 document.querySelector('#print-summary')?.addEventListener('click', () => {
   const items=[document.querySelector('#reto'),...document.querySelectorAll('.activity-step')].filter(Boolean);
+  window.__coasociaPrinting=true;
   beforeSummaryPrint=items.map(item=>[item,item.open]);
   items.forEach(item=>item.open=true);
   window.setTimeout(()=>window.print(),80);
@@ -53,6 +54,7 @@ window.addEventListener('afterprint',()=>{
   if(!beforeSummaryPrint)return;
   beforeSummaryPrint.forEach(([item,wasOpen])=>item.open=wasOpen);
   beforeSummaryPrint=null;
+  window.__coasociaPrinting=false;
 });
 
 document.querySelector('#reset')?.addEventListener('click', () => {
@@ -64,7 +66,7 @@ document.querySelector('#reset')?.addEventListener('click', () => {
   document.querySelector('#reto')?.scrollIntoView({behavior: 'smooth'});
 });
 
-// Ruleta pública de aprendizaje colaborativo, sin seguimiento ni calificaciones.
+// Ruleta formativa del aula privada, sin calificaciones automáticas.
 const publicMissions = [
   'Comunicación: explica a otra persona la situación del agua con una evidencia concreta.',
   'Pensamiento crítico: identifica qué dato sería necesario verificar antes de actuar.',

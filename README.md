@@ -1,3 +1,23 @@
+# Coasocia · Organización de la plataforma
+
+## Versión 0.8 · Portada pública y aula por perfiles
+
+- **/**: portada pública informativa, sin secuencia ni resultados de actividades. Tres bloques desplegables explican qué es el OVA, su funcionamiento general y a quién va dirigido.
+- **/acceso.html**: ingreso o registro por perfiles, con PIN de 4 dígitos según la configuración actual.
+- **/panel.html**: menú privado tras la sesión, con vistas compactas para Inicio, Unidades, Actividades, Recursos, Mi aprendizaje (estudiante), Mis grupos (docente) y Coordinación (primer docente).
+- **/aula.html**: experiencia educativa privada con una unidad, cuatro actividades desplegables, una ruleta y lecturas. Cada paso se abre a demanda y conserva los identificadores del sistema de progreso existente.
+- **/contenido/**: biblioteca editorial con lecturas, guía, plantilla y directorio de documentos. Ver contenido/README.md.
+- **/functions/_middleware.js**: comprueba la sesión antes de entregar el panel, el aula o la biblioteca de archivos desde Cloudflare Pages.
+- **/_routes.json**: enruta las solicitudes del aula y las API a Pages Functions.
+- **/aula.css**, **/landing.css** y **/dashboard.css**: estilos separados por área de la aplicación.
+- **/app.js** y **/progress.js**: conserva las actividades y el guardado de respuestas de la primera unidad.
+
+No se realizaron migraciones de D1 ni se borraron cuentas, clases, invitaciones o avances. La nueva organización requiere comprobar en producción el inicio de sesión, el acceso denegado a visitantes, las pestañas de cada rol, el guardado de progreso y las invitaciones docentes. Para privacidad, revisar la opción Fail closed de Cloudflare Pages.
+
+**Precaución:** el contenido de GitHub es público. No subir identificadores de estudiantes, contraseñas, PIN, respuestas reales, documentos privados ni lecturas sin autorización de uso.
+
+---
+
 # Coasocia — prototipo con diseño Academic Horizon 0.2
 
 

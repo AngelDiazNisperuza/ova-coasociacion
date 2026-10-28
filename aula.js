@@ -2,7 +2,7 @@
 // Cada bloque se abre a demanda. No revela el recorrido en la portada pública.
 document.querySelectorAll('.activity-step').forEach(el=>{
  el.addEventListener('toggle',()=>{
-  if(!el.open)return;
+  if(!el.open||window.__coasociaPrinting)return;
   document.querySelectorAll('.activity-step').forEach(other=>{if(other!==el)other.open=false});
  });
 });

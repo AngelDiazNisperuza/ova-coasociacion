@@ -1,5 +1,5 @@
 'use strict';
-// Auto-guardado opcional: sólo cuentas autenticadas. Sin sesión, el reto sigue siendo público.
+// Auto-guardado en el aula autenticada: conserva el avance por usuario.
 (()=>{
  const label=document.querySelector('#progress-status');
  if(!label)return;
@@ -50,7 +50,7 @@
    const session=await fetch('/api/auth',{credentials:'same-origin',cache:'no-store'});
    if(!session.ok)throw Error();
    const body=await session.json();
-   if(!body.user){label.textContent='Para conservar y recuperar el avance, inicia sesión. Sin cuenta, el ejercicio sigue disponible.';return}
+   if(!body.user){label.textContent='Inicia sesión para recuperar tu progreso.';return}
    const response=await fetch('/api/progress',{credentials:'same-origin',cache:'no-store'});
    if(!response.ok)throw Error();
    const saved=await response.json();
