@@ -42,8 +42,17 @@ for (let i = 0; i < skills.length; i++) {
 }
 
 // Imprimir la ficha requiere que las respuestas aparezcan como texto en algunos navegadores.
+let beforeSummaryPrint=null;
 document.querySelector('#print-summary')?.addEventListener('click', () => {
-  window.print();
+  const items=[document.querySelector('#reto'),...document.querySelectorAll('.activity-step')].filter(Boolean);
+  beforeSummaryPrint=items.map(item=>[item,item.open]);
+  items.forEach(item=>item.open=true);
+  window.setTimeout(()=>window.print(),80);
+});
+window.addEventListener('afterprint',()=>{
+  if(!beforeSummaryPrint)return;
+  beforeSummaryPrint.forEach(([item,wasOpen])=>item.open=wasOpen);
+  beforeSummaryPrint=null;
 });
 
 document.querySelector('#reset')?.addEventListener('click', () => {
