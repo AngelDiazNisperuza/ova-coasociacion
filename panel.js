@@ -11,16 +11,24 @@ async function load(){
   const r=await fetch('/api/auth',{cache:'no-store',credentials:'same-origin'});
   const data=await r.json();
   if(!r.ok||!data.user)throw Error('Inicia sesión para usar tu espacio.');
-  $('#welcome').textContent='Bienvenido, '+data.user.username;
+  const admin=data.user.role==='administrador';
   const teacher=data.user.role==='docente';
-  $('#subtitle').textContent=teacher?'Área de acompañamiento y administración de clases.':'Área de aprendizaje y actividades colaborativas.';
+  const student=data.user.role==='estudiante';
+  $('#hero-kicker').textContent=admin?'CENTRO DE GESTIÓN':'MI ESPACIO';
+  $('#welcome').textContent=admin?'Centro de Gestión – Ibeth Ruiz':'Bienvenido, '+data.user.username;
+  $('#subtitle').textContent=admin?'Dirección, administración y supervisión general de Coasocia.':teacher?'Área de acompañamiento y administración de clases.':'Área de aprendizaje y actividades colaborativas.';
   $('#teacher-panel').hidden=!teacher;
-  $('#student-panel').hidden=teacher;
-  document.querySelectorAll('[data-for]').forEach(el=>{el.hidden=(el.dataset.for==='docente'&&!teacher)||(el.dataset.for==='estudiante'&&teacher)||(el.dataset.for==='coordinador'&&!(teacher&&data.user.coordinator));});
+  $('#student-panel').hidden=!student;
+  $('#coord-panel').hidden=!admin;
+  document.querySelectorAll('[data-for]').forEach(el=>{
+    const role=el.dataset.for;
+    el.hidden=(role==='regular'&&admin)||(role==='administrador'&&!admin)||(role==='docente'&&!teacher)||(role==='estudiante'&&!student)||(role==='coordinador'&&!admin);
+  });
   $('#dashboard').hidden=false;$('#loading').hidden=true;
-  showView('inicio');
-  $('#coord-panel').hidden=!(teacher&&data.user.coordinator);
-  if(teacher){await loadClasses();await loadStudents();if(data.user.coordinator)await loadTeachers();}else{await loadOwnProgress();}
+  showView(admin?'admin-inicio':'inicio');
+  if(admin){await loadTeachers();await loadAdminOverview();}
+  else if(teacher){await loadClasses();await loadStudents();}
+  else{await loadOwnProgress();}
  }catch(err){$('#loading-message').textContent=err.message||'No se pudo verificar la sesión.'}
 }
 async function loadClasses(){

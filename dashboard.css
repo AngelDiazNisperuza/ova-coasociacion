@@ -21,3 +21,14 @@
 .teacher-admin-actions{display:flex;flex-wrap:wrap;gap:7px}
 .teacher-admin-actions .link-button{font-size:12px;padding:9px 12px;min-height:37px}
 @media(max-width:640px){.teacher-admin-actions{width:100%}.teacher-admin-item{padding:14px}}
+
+/* Perfil exclusivo Centro de Gestión – Ibeth Ruiz */
+.admin-auth-bar{padding:16px 20px;border-radius:13px;background:#eff4ff;border:1px solid #dbe4ee;margin-bottom:15px}
+.admin-auth-bar[hidden]{display:none!important}
+.admin-auth-bar label{display:block;font-weight:750;font-size:13px;color:#0d234c;margin-bottom:7px}
+.admin-auth-bar input{display:block;border:1px solid #cbd5e1;border-radius:9px;background:#fff;padding:10px 14px;width:min(100%,490px);font-size:14px}
+.admin-auth-bar p{font-size:12px;color:#526173;margin:7px 0 0}
+.admin-shortcuts{margin-top:20px}.admin-create-student{display:flex;flex-wrap:wrap;gap:12px;align-items:flex-end;padding:15px 0 22px}
+.admin-create-student label{min-width:190px;flex:1;font-size:13px;font-weight:700;color:#0d234c}
+.admin-create-student input,.admin-create-student select{display:block;width:100%;min-height:42px;border:1px solid #cbd5e1;border-radius:8px;padding:10px;margin-top:7px;background:#fff}
+[data-view="admin-inicio"] .quick-card strong{font-size:25px}
