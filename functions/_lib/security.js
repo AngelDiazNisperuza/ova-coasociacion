@@ -73,3 +73,11 @@ export async function removeSession(env,request){
  if(token)await env.DB.prepare('DELETE FROM sessions WHERE token_hash=?').bind(await digest(token)).run();
 }
 // No se aplica bloqueo de cuentas por fallos. Se recomienda protección antibots en Cloudflare.
+
+/* El primer docente registrado es el administrador efectivo, identificado por ID.
+   No se reconstruyen las tablas D1 ni se cambia el campo role legado. */
+export async function isAdministrator(env,user){
+ if(!user||user.role!=='docente'||!dbReady(env))return false;
+ const row=await env.DB.prepare("SELECT id FROM users WHERE role='docente' ORDER BY created_at,id LIMIT 1").first();
+ return row?.id===user.id;
+}

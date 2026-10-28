@@ -1,4 +1,4 @@
-import {response,error,dbReady,validOrigin,input,activeUser,now} from '../_lib/security.js';
+import {response,error,dbReady,validOrigin,input,activeUser,isAdministrator,now} from '../_lib/security.js';
 const ACTIVITY='reto-agua-01';
 function clean(data){
  if(!data||typeof data!=='object'||Array.isArray(data))return null;
@@ -27,6 +27,7 @@ export async function onRequestGet({request,env}){
  try{
   const user=await activeUser(env,request);
   if(!user)return error('Inicia sesión para recuperar el progreso.',401);
+  if(await isAdministrator(env,user))return error('El Centro de Gestión no realiza actividades.',403);
   const row=await env.DB.prepare('SELECT data,updated_at FROM activity_progress WHERE user_id=? AND activity_id=?').bind(user.id,ACTIVITY).first();
   return response({ok:true,progress:row?JSON.parse(row.data):null,updatedAt:row?.updated_at??null});
  }catch{return error('El almacenamiento del progreso todavía necesita inicializarse.',503)}
@@ -37,6 +38,7 @@ export async function onRequestPost({request,env}){
  try{
   const user=await activeUser(env,request);
   if(!user)return error('Inicia sesión para guardar.',401);
+  if(await isAdministrator(env,user))return error('El Centro de Gestión no realiza actividades.',403);
   const body=await input(request);
   const cleanData=clean(body.progress);
   if(!cleanData)return error('Progreso incorrecto.');

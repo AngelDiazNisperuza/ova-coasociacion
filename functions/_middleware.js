@@ -1,4 +1,4 @@
-import {activeUser,dbReady} from './_lib/security.js';
+import {activeUser,isAdministrator,dbReady} from './_lib/security.js';
 // Restringir contenido del aula y el panel; nunca confiar solo en mostrar/ocultar con CSS.
 export async function onRequest(context){
  const url=new URL(context.request.url);
@@ -11,6 +11,7 @@ export async function onRequest(context){
  try{
   const user=await activeUser(context.env,context.request);
   if(!user)return Response.redirect(new URL('/acceso.html',url),302);
+  if((url.pathname.startsWith('/aula')||url.pathname.startsWith('/contenido/'))&&await isAdministrator(context.env,user))return Response.redirect(new URL('/panel.html',url),302);
   const result=await context.next();
   const copy=new Response(result.body,result);
   copy.headers.set('Cache-Control','private, no-store');

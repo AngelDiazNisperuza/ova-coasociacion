@@ -1,4 +1,4 @@
-import {response,error,now,dbReady,validOrigin,input,userName,passwordOK,digest,hashPassword,verifyPassword,constantCompare,createSession,clearCookie,activeUser,removeSession} from '../_lib/security.js';
+import {response,error,now,dbReady,validOrigin,input,userName,passwordOK,digest,hashPassword,verifyPassword,constantCompare,createSession,clearCookie,activeUser,removeSession,isAdministrator} from '../_lib/security.js';
 
 export async function onRequestGet({request,env}){
  if(!dbReady(env))return error('El acceso está pendiente de conexión con D1.',503);
@@ -6,12 +6,8 @@ export async function onRequestGet({request,env}){
   const user=await activeUser(env,request);
   const docentes=await env.DB.prepare("SELECT COUNT(*) AS total FROM users WHERE role='docente'").first();
   if(!user)return response({ok:true,user:null,setupAvailable:docentes.total===0});
-  let coordinator=false;
-  if(user.role==='docente'){
-   const first=await env.DB.prepare("SELECT id FROM users WHERE role='docente' ORDER BY created_at,id LIMIT 1").first();
-   coordinator=first?.id===user.id;
-  }
-  return response({ok:true,user:{username:user.username,role:user.role,coordinator},setupAvailable:docentes.total===0});
+  const administrator=await isAdministrator(env,user);
+  return response({ok:true,user:{username:user.username,role:administrator?'administrador':user.role,coordinator:administrator},setupAvailable:docentes.total===0});
  }catch{return error('Es necesario inicializar la base D1.',503)}
 }
 export async function onRequestPost({request,env}){
@@ -32,7 +28,7 @@ export async function onRequestPost({request,env}){
    if(data.role&&data.role!==user.role)return error('La cuenta corresponde a otro perfil. Selecciona Estudiantes o Docentes.',403);
    await removeSession(env,request);
    const session=await createSession(env,user.id);
-   return response({ok:true,user:{username:user.username,role:user.role}},200,{'set-cookie':session});
+   return response({ok:true,user:{username:user.username,role:await isAdministrator(env,user)?'administrador':user.role}},200,{'set-cookie':session});
   }
   if(data.action==='register'){
    const username=userName(data.username);
@@ -84,7 +80,7 @@ export async function onRequestPost({request,env}){
     .bind(uid,username,record.hash,record.salt,record.iterations,now()).run();
    if(inserted.meta?.changes!==1)return error('Ya existe una cuenta docente administradora.',409);
    const session=await createSession(env,uid);
-   return response({ok:true,user:{username,role:'docente'}},201,{'set-cookie':session});
+   return response({ok:true,user:{username,role:'administrador'}},201,{'set-cookie':session});
   }
   return error('Acción no válida.');
  }catch(e){
