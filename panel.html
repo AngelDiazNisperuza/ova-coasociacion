@@ -56,6 +56,15 @@
 <p>Este espacio corresponde al primer docente registrado. Genera un código temporal para que otro profesor cree su propia cuenta con PIN de cuatro dígitos. Los profesores invitados administran únicamente sus grupos.</p>
 <button id="make-teacher-invite" class="action" type="button">Generar invitación docente</button>
 <div id="teacher-invite-result" class="class-result" role="status" aria-live="polite"></div>
+<div class="teacher-management">
+<h3>Administrar cuentas docentes</h3>
+<p>Consulta los grupos de cada profesor y administra su acceso. Desactivar conserva los estudiantes y sus avances; eliminar definitivamente solo es posible para cuentas sin grupos ni progreso.</p>
+<label for="teacher-admin-key">Clave de coordinación de Cloudflare</label>
+<input id="teacher-admin-key" type="password" autocomplete="off" spellcheck="false" placeholder="Confirma los cambios con la clave de 24 caracteres" />
+<div class="teacher-admin-tools"><button type="button" class="link-button" id="refresh-teachers">Actualizar docentes</button></div>
+<div id="teachers-message" class="teacher-admin-message" role="status" aria-live="polite"></div>
+<div id="teacher-admin-list" aria-label="Docentes registrados"></div>
+</div>
 </section>
 </section>
 </main>

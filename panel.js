@@ -20,7 +20,7 @@ async function load(){
   $('#dashboard').hidden=false;$('#loading').hidden=true;
   showView('inicio');
   $('#coord-panel').hidden=!(teacher&&data.user.coordinator);
-  if(teacher){await loadClasses();await loadStudents();}else{await loadOwnProgress();}
+  if(teacher){await loadClasses();await loadStudents();if(data.user.coordinator)await loadTeachers();}else{await loadOwnProgress();}
  }catch(err){$('#loading-message').textContent=err.message||'No se pudo verificar la sesión.'}
 }
 async function loadClasses(){
@@ -226,3 +226,79 @@ async function loadOwnProgress(){
   node.append(strong,detail,date);
  }catch(e){node.textContent=e.message||'No fue posible mostrar el avance.'}
 }
+
+
+// La autorización y la clave de coordinación se verifican siempre desde el servidor.
+async function loadTeachers(){
+ const list=$('#teacher-admin-list'),feedback=$('#teachers-message');
+ if(!list)return;
+ list.replaceChildren();
+ try{
+  const r=await fetch('/api/teachers',{credentials:'same-origin',cache:'no-store'});
+  const d=await r.json();
+  if(!r.ok||!d.ok)throw Error(d.error||'No se pudo cargar el listado de docentes.');
+  if(!d.teachers.length){list.textContent='Todavía no hay docentes.';return}
+  for(const t of d.teachers){
+   const card=document.createElement('article');card.className='teacher-admin-item';
+   const info=document.createElement('div');info.className='teacher-admin-info';
+   const name=document.createElement('strong');name.textContent=t.username+(t.coordinator?' · Coordinación':'');
+   const status=document.createElement('span');
+   status.textContent=(t.active?'Activa':'Desactivada')+' · '+t.classCount+' grupos · '+t.studentCount+' estudiantes';
+   const groups=document.createElement('p');
+   groups.textContent=t.classes.length?'Grupos: '+t.classes.map(c=>c.name+(c.active?'':' (inactivo)')).join(' · '):'Sin grupos asignados';
+   info.append(name,status,groups);card.append(info);
+   if(!t.coordinator){
+    const actions=document.createElement('div');actions.className='teacher-admin-actions';
+    const rename=document.createElement('button');rename.type='button';rename.className='link-button';rename.textContent='Editar usuario';
+    rename.addEventListener('click',async()=>{
+     const username=window.prompt('Escribe el nuevo nombre de '+t.username+':',t.username);
+     if(username===null||username.trim().toLowerCase()===t.username)return;
+     await manageTeacher({action:'rename',id:t.id,username});
+    });
+    const pin=document.createElement('button');pin.type='button';pin.className='link-button';pin.textContent='Nuevo PIN';
+    pin.addEventListener('click',async()=>{
+     if(!window.confirm('¿Renovar el PIN de '+t.username+'? Se cerrarán sus sesiones, conservando grupos y avances.'))return;
+     await manageTeacher({action:'reset_pin',id:t.id});
+    });
+    const toggle=document.createElement('button');toggle.type='button';toggle.className='link-button';toggle.textContent=t.active?'Desactivar':'Reactivar';
+    toggle.addEventListener('click',async()=>{
+     const action=t.active?'deactivate':'reactivate';
+     if(!window.confirm((t.active?'¿Desactivar':'¿Reactivar')+' a '+t.username+'? Sus grupos no se eliminarán.'))return;
+     await manageTeacher({action,id:t.id});
+    });
+    actions.append(rename,pin,toggle);
+    if(t.classCount===0){
+     const remove=document.createElement('button');remove.type='button';remove.className='link-button danger';remove.textContent='Eliminar';
+     remove.addEventListener('click',async()=>{
+      const typed=window.prompt('Eliminación definitiva. Escribe '+t.username+' para confirmar:');
+      if(typed!==t.username)return;
+      await manageTeacher({action:'delete',id:t.id});
+     });
+     actions.append(remove);
+    }
+    card.append(actions);
+   }
+   list.append(card);
+  }
+ }catch(e){feedback.textContent=e.message||'No se pudo consultar docentes.'}
+}
+async function manageTeacher(payload){
+ const feedback=$('#teachers-message'),secret=$('#teacher-admin-key');
+ const adminKey=secret?.value||'';
+ if(secret)secret.value=''; // No conservar el secreto en el navegador después de usarlo.
+ if(!adminKey){feedback.textContent='Introduce la clave de coordinación de Cloudflare antes de efectuar cambios.';return}
+ feedback.replaceChildren();
+ try{
+  const data=await post('/api/teachers',{...payload,adminKey});
+  await loadTeachers();
+  feedback.replaceChildren();
+  const message=document.createElement('span');message.textContent=data.message||'Cambios guardados.';
+  feedback.append(message);
+  if(data.pin){
+   const line=document.createElement('p');line.textContent='PIN nuevo para comunicar de forma privada (visible una sola vez): ';
+   const pin=document.createElement('strong');pin.textContent=data.pin;
+   line.append(pin);feedback.append(line);
+  }
+ }catch(err){feedback.textContent=err.message||'No se pudo realizar el cambio.'}
+}
+$('#refresh-teachers')?.addEventListener('click',loadTeachers);
