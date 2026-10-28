@@ -11,8 +11,12 @@
 <form id="class-form" class="create-class"><label>Nombre de clase<input name="name" maxlength="60" minlength="3" placeholder="Ej. Grado 10.º — Grupo A" required></label><button class="action" type="submit">Crear código de clase</button></form>
 <div id="class-result" class="class-result" role="status" aria-live="polite"></div>
 <h3>Clases creadas</h3><div id="class-list" class="class-list"></div>
+<div class="students-header"><div><h3>Gestión de estudiantes</h3><p>Actualiza usuarios, genera un PIN nuevo o elimina una cuenta. Restablecer el PIN conserva las actividades guardadas; eliminar la cuenta borra esos datos de manera definitiva.</p></div>
+<button class="link-button" type="button" id="refresh-students">Actualizar lista</button></div>
+<div id="students-message" class="management-message" role="status" aria-live="polite"></div>
+<div id="students-list" class="students-list"></div>
 </section>
-<section id="student-panel" hidden><h2>Bienvenido a tu laboratorio</h2><p>Inicia el reto de aprendizaje y conversa con tu equipo sobre lo que descubran.</p><a class="action action-link" href="/#paso-1">Comenzar Reto 01</a></section>
+<section id="student-panel" hidden><h2>Bienvenido a tu laboratorio</h2><p>Inicia el reto de aprendizaje y conversa con tu equipo sobre lo que descubran. Tu avance se guarda en D1 cuando estás conectado.</p><a class="action action-link" href="/#paso-1">Comenzar Reto 01</a></section>
 <section class="roulette-section" aria-labelledby="roulette-title"><span class="kicker">GAMIFICACIÓN FORMATIVA</span><h2 id="roulette-title">Ruleta de habilidades transversales</h2><p>Gira la ruleta para recibir una misión de comunicación, colaboración, pensamiento crítico o resolución de problemas. La actividad no genera calificación.</p>
 <div class="roulette-wrap"><div class="wheel" id="wheel" aria-hidden="true"><span>COMUNICACIÓN</span><span>COLABORACIÓN</span><span>ANÁLISIS</span><span>PROPUESTAS</span></div><div class="roulette-actions"><button class="action" type="button" id="spin">Girar la ruleta</button><div id="mission" role="status" aria-live="polite" class="mission">Selecciona una misión para comenzar.</div></div></div>
 </section>

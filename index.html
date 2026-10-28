@@ -12,6 +12,7 @@
   <link rel="stylesheet" href="styles.css">
   <link rel="stylesheet" href="academic-horizon.css">
   <script src="app.js" defer></script>
+  <script src="progress.js" defer></script>
 </head>
 <body>
   <a class="skip" href="#principal">Saltar al contenido</a>
@@ -86,7 +87,7 @@
             <div class="fields"><label for="evidencia">¿Qué nos dicen los datos y qué falta comprobar?<textarea id="evidencia" rows="3" placeholder="Explica la evidencia y sus límites sin inventar observaciones reales."></textarea></label><label for="dialogo">¿Qué idea aportó otra persona y cómo influyó en la propuesta?<textarea id="dialogo" rows="3" placeholder="Escribe una idea discutida con tu equipo; si trabajas a solas, anota qué preguntarías."></textarea></label><label for="propuesta">¿Qué acción concreta proponen y cómo comprobarían su utilidad?<textarea id="propuesta" rows="3" placeholder="Formula una acción viable, los responsables y una evidencia para revisarla."></textarea></label></div>
         </div></div>
         <div class="step" id="paso-4"><div class="step-index">04</div><div class="step-body"><div class="step-label">REFLEXIONAR · AUTOEVALUACIÓN FORMATIVA</div><h3>Revisa tu proceso de aprendizaje</h3><p>Elige un nivel para cada habilidad. Esta es una autoevaluación orientativa, no una medición validada del nivel de desarrollo.</p>
-          <div class="rubric" id="rubric"></div><div class="actions"><button class="button primary" type="button" id="print-summary">Imprimir o guardar ficha en PDF</button><button class="button outline" type="button" id="reset">Reiniciar actividad</button></div><p class="privacy-note">Los textos se mantienen únicamente en esta página mientras esté abierta. No se envían al servidor ni se registran estudiantes.</p>
+          <div class="rubric" id="rubric"></div><div class="actions"><button class="button primary" type="button" id="print-summary">Imprimir o guardar ficha en PDF</button><button class="button outline" type="button" id="reset">Reiniciar actividad</button><button class="button outline" type="button" id="save-progress">Guardar avance</button></div><p class="privacy-note" id="progress-status" role="status" aria-live="polite">Si has iniciado sesión, puedes guardar y retomar tu progreso en este reto. En el acceso público, las respuestas permanecen únicamente en tu navegador.</p>
         </div></div>
       </div>
     </section>

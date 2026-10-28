@@ -17,7 +17,7 @@ async function load(){
   $('#teacher-panel').hidden=!teacher;
   $('#student-panel').hidden=teacher;
   $('#dashboard').hidden=false;$('#loading').hidden=true;
-  if(teacher)await loadClasses();
+  if(teacher){await loadClasses();await loadStudents();}
  }catch(err){$('#loading-message').textContent=err.message||'No se pudo verificar la sesión.'}
 }
 async function loadClasses(){
@@ -69,3 +69,62 @@ $('#spin').addEventListener('click',()=>{
  window.setTimeout(()=>{$('#mission').textContent=missions[index];$('#spin').disabled=false;turning=false},1100);
 });
 load();
+
+
+// Gestión de cuentas de los estudiantes de las clases del docente conectado.
+// El servidor verifica propiedad de la clase antes de aceptar cualquier cambio.
+async function loadStudents(){
+ const target=$('#students-list'), status=$('#students-message');
+ target.replaceChildren();status.textContent='Consultando estudiantes…';
+ try{
+  const r=await fetch('/api/students',{credentials:'same-origin',cache:'no-store'});
+  const data=await r.json();
+  if(!r.ok||!data.ok)throw Error(data.error||'No se pudo abrir el listado');
+  status.textContent=data.students.length?'':'Sin estudiantes registrados todavía.';
+  for(const student of data.students){
+   const card=document.createElement('div');card.className='student-item';
+   const details=document.createElement('div');details.className='student-info';
+   const name=document.createElement('strong');name.textContent=student.username;
+   const cls=document.createElement('span');cls.textContent=student.class_name+' · '+(student.active?'Cuenta activa':'Cuenta desactivada');
+   details.append(name,cls);
+   const actions=document.createElement('div');actions.className='student-actions';
+   const rename=document.createElement('button');rename.type='button';rename.className='link-button';rename.textContent='Editar usuario';
+   rename.addEventListener('click',async()=>{
+    const username=window.prompt('Nuevo nombre de usuario:',student.username);
+    if(username===null||username.trim()===student.username)return;
+    await manageStudent({action:'rename',id:student.id,username});
+   });
+   const reset=document.createElement('button');reset.type='button';reset.className='link-button';reset.textContent='Nuevo PIN';
+   reset.addEventListener('click',async()=>{
+    if(!window.confirm('¿Generar un nuevo PIN para '+student.username+'? Se cerrarán sus sesiones y se conservará su progreso.'))return;
+    await manageStudent({action:'reset_pin',id:student.id},true);
+   });
+   const del=document.createElement('button');del.type='button';del.className='link-button danger';del.textContent='Eliminar';
+   del.addEventListener('click',async()=>{
+    const typed=window.prompt('ELIMINACIÓN DEFINITIVA. Se borrarán la cuenta y sus actividades. Escribe '+student.username+' para confirmar:');
+    if(typed!==student.username)return;
+    await manageStudent({action:'delete',id:student.id});
+   });
+   actions.append(rename,reset,del);card.append(details,actions);target.append(card);
+  }
+ }catch(e){status.textContent=e.message||'No se pudo consultar la lista.'}
+}
+async function manageStudent(payload,showPin=false){
+ const message=$('#students-message');message.replaceChildren();
+ try{
+  const data=await post('/api/students',payload);
+  if(showPin&&data.pin){
+   const note=document.createElement('span');note.textContent='PIN nuevo para compartir una sola vez: ';
+   const pin=document.createElement('strong');pin.textContent=data.pin;
+   const note2=document.createElement('span');note2.textContent=' · '+data.message;
+   message.append(note,pin,note2);
+   // Conservar el aviso hasta la siguiente acción: el PIN no se guarda en el navegador.
+   await loadStudents();
+   message.replaceChildren(note,pin,note2);
+  }else{
+   await loadStudents();
+   message.textContent=data.message||'Actualización completada.';
+  }
+ }catch(e){message.textContent=e.message||'Operación no completada.'}
+}
+$('#refresh-students')?.addEventListener('click',loadStudents);
