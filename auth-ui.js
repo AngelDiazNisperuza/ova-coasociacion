@@ -17,7 +17,7 @@ function render(){
   $('#active-session').hidden=!signedIn;
   if(signedIn){
    $('#active-session-user').textContent=activeSession.username;
-   $('#active-session-role').textContent=activeSession.role==='docente'?'docente':'estudiante';
+   $('#active-session-role').textContent=activeSession.role==='administrador'?'Centro de Gestión':activeSession.role==='docente'?'docente':'estudiante';
   }
   $('#form-message').textContent='';
 }

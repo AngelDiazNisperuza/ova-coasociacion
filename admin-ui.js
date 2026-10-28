@@ -27,6 +27,10 @@ async function adminAction(payload,target){
  }catch(e){adminNotice(target,e.message||'No se pudo realizar el cambio.')}
 }
 async function loadAdminOverview(){
+ const teachersResponse=await fetch('/api/teachers',{credentials:'same-origin',cache:'no-store'});
+ const teachersData=await teachersResponse.json();
+ if(!teachersResponse.ok||!teachersData.ok)throw Error(teachersData.error||'No se pudieron consultar docentes.');
+ adminTeachers=teachersData.teachers;
  const r=await fetch('/api/admin-overview',{credentials:'same-origin',cache:'no-store'});
  const d=await r.json();
  if(!r.ok||!d.ok)throw Error(d.error||'No se pudo cargar la supervisión.');
