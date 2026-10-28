@@ -94,7 +94,27 @@ function renderAdminStudents(students){
     try{
       const r=await fetch('/api/admin-progress?id='+encodeURIComponent(student.id),{credentials:'same-origin',cache:'no-store'});
       const d=await r.json();if(!r.ok||!d.ok)throw Error(d.error||'Sin detalle disponible');
-      adminNotice('admin-student-result','Avance de '+student.username+': '+(d.progress?'Actividad registrada y recuperable.':'Sin respuestas guardadas todavía.'));
+      const target=aEl('admin-student-result');target.replaceChildren();
+      const heading=document.createElement('strong');heading.textContent='Avance de '+student.username;target.append(heading);
+      if(!d.progress){
+       const p=document.createElement('p');p.textContent='Aún no hay respuestas guardadas.';target.append(p);
+      }else{
+       const p=document.createElement('p');p.textContent='Última actualización: '+(d.updatedAt?new Date(d.updatedAt*1000).toLocaleString('es-CO'):'sin fecha');target.append(p);
+       const answers=[
+        ['Indagación',d.progress.radio?.q1||'Sin respuesta'],
+        ['Interpretación de datos',d.progress.radio?.q2||'Sin respuesta'],
+        ['Evidencias',d.progress.fields?.evidencia||'Sin respuesta'],
+        ['Diálogo',d.progress.fields?.dialogo||'Sin respuesta'],
+        ['Propuesta',d.progress.fields?.propuesta||'Sin respuesta']
+       ];
+       for(let i=0;i<4;i++)answers.push(['Autoevaluación '+(i+1),d.progress.rubric?.['skill-'+i]||'Sin respuesta']);
+       for(const [label,value] of answers){
+        const row=document.createElement('p');
+        const bold=document.createElement('strong');bold.textContent=label+': ';
+        const span=document.createElement('span');span.textContent=value;
+        row.append(bold,span);target.append(row);
+       }
+      }
     }catch(e){adminNotice('admin-student-result',e.message)}
    })
   );
