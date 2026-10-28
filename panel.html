@@ -4,27 +4,35 @@
 </head><body>
 <header class="top"><a class="identity" href="/"><span class="logomark" aria-hidden="true">◈</span><span><strong>coasocia</strong><small>LABORATORIO DE HABILIDADES</small></span></a><nav class="header-actions"><a class="back" href="/">Portada</a><button id="logout" class="link-button" type="button">Cerrar sesión</button></nav></header>
 <main class="dashboard" id="dashboard" hidden>
-<div class="dashboard-hero"><span class="kicker">MI ESPACIO</span><h1 id="welcome">Bienvenido a Coasocia</h1><p id="subtitle">Aprender y construir juntos.</p></div>
+<div class="dashboard-hero"><span class="kicker" id="hero-kicker">MI ESPACIO</span><h1 id="welcome">Bienvenido a Coasocia</h1><p id="subtitle">Aprender y construir juntos.</p></div>
+<div id="admin-auth" class="admin-auth-bar" data-for="administrador" hidden>
+<label for="teacher-admin-key">Clave de coordinación de Cloudflare</label>
+<input id="teacher-admin-key" type="password" autocomplete="off" spellcheck="false" placeholder="Se solicita al guardar cambios sensibles" />
+<p>La clave se utiliza para confirmar cambios y no se conserva después de cada operación.</p>
+</div>
 <nav class="dash-tabs" aria-label="Secciones de mi espacio">
-<button type="button" data-view-button="inicio" class="selected">Inicio</button>
-<button type="button" data-view-button="unidades">Unidades didácticas</button>
-<button type="button" data-view-button="actividades">Actividades</button>
+<button type="button" data-for="regular" data-view-button="inicio" class="selected">Inicio</button>
+<button type="button" data-for="regular" data-view-button="unidades">Unidades didácticas</button>
+<button type="button" data-for="regular" data-view-button="actividades">Actividades</button>
 <button type="button" data-view-button="progreso" data-for="estudiante" hidden>Mi aprendizaje</button>
-<button type="button" data-view-button="recursos">Recursos</button>
+<button type="button" data-for="regular" data-view-button="recursos">Recursos</button>
 <button type="button" data-view-button="grupos" data-for="docente" hidden>Mis grupos</button>
-<button type="button" data-view-button="coordinacion" data-for="coordinador" hidden>Coordinación</button>
+<button type="button" data-for="administrador" data-view-button="admin-inicio" hidden>Resumen general</button>
+<button type="button" data-for="administrador" data-view-button="admin-docentes" hidden>Docentes</button>
+<button type="button" data-for="administrador" data-view-button="admin-estudiantes" hidden>Estudiantes</button>
+<button type="button" data-for="administrador" data-view-button="admin-grupos" hidden>Grupos</button>
 </nav>
-<section class="dash-view" data-view="inicio"><h2>¿Qué deseas hacer?</h2><p>Selecciona un espacio de trabajo. Los contenidos se abren cuando los necesitas.</p><div class="quick-grid">
+<section class="dash-view" data-for="regular" data-view="inicio"><h2>¿Qué deseas hacer?</h2><p>Selecciona un espacio de trabajo. Los contenidos se abren cuando los necesitas.</p><div class="quick-grid">
 <button type="button" class="quick-card" data-go="unidades"><span class="quick-tag">APRENDER</span><strong>Unidades didácticas</strong><span>Abre el contenido que corresponde a tu trabajo.</span></button>
 <button type="button" class="quick-card" data-go="actividades"><span class="quick-tag">PRACTICAR</span><strong>Actividades interactivas</strong><span>Accede a retos y desafíos colaborativos.</span></button>
 <button type="button" class="quick-card" data-go="recursos"><span class="quick-tag">CONSULTAR</span><strong>Lecturas y recursos</strong><span>Amplía tus ideas con materiales breves.</span></button>
 <button type="button" class="quick-card" data-go="grupos" data-for="docente" hidden><span class="quick-tag">ORIENTAR</span><strong>Mis grupos</strong><span>Administra participantes y consulta avances.</span></button>
 <button type="button" class="quick-card" data-go="progreso" data-for="estudiante" hidden><span class="quick-tag">CONTINUAR</span><strong>Mi aprendizaje</strong><span>Recupera las respuestas de tu última sesión.</span></button>
 </div></section>
-<section class="dash-view" data-view="unidades" hidden><h2>Unidades didácticas</h2><p>Explora cada unidad desde su propia página, sin recorrer todos los contenidos de una vez.</p><div class="module-list">
+<section class="dash-view" data-for="regular" data-view="unidades" hidden><h2>Unidades didácticas</h2><p>Explora cada unidad desde su propia página, sin recorrer todos los contenidos de una vez.</p><div class="module-list">
 <article class="module-card"><span class="quick-tag">UNIDAD 01</span><h3>El cuidado del agua en la comunidad escolar</h3><p>Explora una situación cotidiana mediante preguntas, datos y reflexión compartida.</p><a class="action action-link" href="/aula.html#reto">Abrir unidad</a></article>
 <article class="module-card soon"><span class="quick-tag">EN PREPARACIÓN</span><h3>Otras experiencias interdisciplinarias</h3><p>Se incorporarán gradualmente según la planeación docente.</p></article></div></section>
-<section class="dash-view" data-view="actividades" hidden><h2>Actividades interactivas</h2><p>Selecciona una actividad para abrirla en el aula. Tu avance se guarda en tu cuenta.</p><div class="module-list">
+<section class="dash-view" data-for="regular" data-view="actividades" hidden><h2>Actividades interactivas</h2><p>Selecciona una actividad para abrirla en el aula. Tu avance se guarda en tu cuenta.</p><div class="module-list">
 <article class="module-card"><span class="quick-tag">RETO 01</span><h3>Investigar un problema</h3><p>Plantea preguntas para interpretar una situación.</p><a class="action action-link" href="/aula.html#paso-1">Abrir actividad</a></article>
 <article class="module-card"><span class="quick-tag">RETO 02</span><h3>Leer información</h3><p>Interpreta datos para argumentar decisiones.</p><a class="action action-link" href="/aula.html#paso-2">Abrir actividad</a></article>
 <article class="module-card"><span class="quick-tag">RETO 03</span><h3>Dialogar en equipo</h3><p>Contrasta ideas y elabora una propuesta conjunta.</p><a class="action action-link" href="/aula.html#paso-3">Abrir actividad</a></article>
@@ -34,7 +42,7 @@
 <section class="dash-view" data-view="progreso" hidden data-for="estudiante"><h2>Mi aprendizaje</h2><p>Consulta tu último avance y retoma las actividades donde las dejaste.</p><div class="progress-summary" id="own-progress" role="status" aria-live="polite">Recuperando tu información…</div>
 <section id="student-panel" hidden><h2>Bienvenido a tu laboratorio</h2><p>Inicia el reto de aprendizaje y conversa con tu equipo sobre lo que descubran. Tu avance se guarda en D1 cuando estás conectado.</p><a class="action action-link" href="/aula.html#paso-1">Comenzar Reto 01</a></section>
 </section>
-<section class="dash-view" data-view="recursos" hidden><h2>Lecturas y materiales de apoyo</h2><p>Encuentra recursos de consulta breves. Cada lectura se abre cuando la seleccionas.</p>
+<section class="dash-view" data-for="regular" data-view="recursos" hidden><h2>Lecturas y materiales de apoyo</h2><p>Encuentra recursos de consulta breves. Cada lectura se abre cuando la seleccionas.</p>
 <details class="resource-card"><summary>Indagar y formular preguntas <span aria-hidden="true">⌄</span></summary><div><p>Antes de tomar una decisión, identifica lo que sabes y lo que falta comprobar. La observación y el registro de información aportan evidencias para dialogar con otras personas.</p><a class="action action-link" href="/aula.html#recursos">Abrir material en el aula</a></div></details>
 <details class="resource-card"><summary>Comunicación y trabajo compartido <span aria-hidden="true">⌄</span></summary><div><p>Escuchar razones, intercambiar perspectivas y revisar acuerdos contribuye a construir conocimiento con otras personas.</p><a class="action action-link" href="/aula.html#recursos">Abrir material en el aula</a></div></details>
 <details class="resource-card"><summary>Reflexión y propuestas <span aria-hidden="true">⌄</span></summary><div><p>Justifica tus propuestas, describe cómo podrían revisarse y expresa qué aprendiste durante la experiencia.</p><a class="action action-link" href="/aula.html#recursos">Abrir material en el aula</a></div></details>
@@ -51,16 +59,44 @@
 </section>
 
 </section>
-<section class="dash-view" data-view="coordinacion" hidden data-for="coordinador"><section id="coord-panel" hidden aria-labelledby="coord-title">
-<h2 id="coord-title">Coordinación: invitar profesores</h2>
-<p>Este espacio corresponde al primer docente registrado. Genera un código temporal para que otro profesor cree su propia cuenta con PIN de cuatro dígitos. Los profesores invitados administran únicamente sus grupos.</p>
+<section class="dash-view" data-for="administrador" data-view="admin-inicio" hidden>
+<h2>Centro de Gestión – Ibeth Ruiz</h2>
+<p>Supervisa las cuentas, los grupos y el avance general de Coasocia desde un solo lugar.</p>
+<div id="admin-summary" class="quick-grid" role="status" aria-live="polite">
+<div class="quick-card"><strong>Comprobando información…</strong></div>
+</div>
+<div class="quick-grid admin-shortcuts">
+<button class="quick-card" type="button" data-go="admin-docentes"><span class="quick-tag">PERSONAL</span><strong>Docentes</strong><span>Invitaciones, cuentas, PIN y acceso.</span></button>
+<button class="quick-card" type="button" data-go="admin-estudiantes"><span class="quick-tag">PARTICIPANTES</span><strong>Estudiantes</strong><span>Usuarios, estado y avance guardado.</span></button>
+<button class="quick-card" type="button" data-go="admin-grupos"><span class="quick-tag">ORGANIZACIÓN</span><strong>Grupos</strong><span>Asignaciones, códigos y responsables.</span></button>
+</div>
+</section>
+<section class="dash-view" data-for="administrador" data-view="admin-estudiantes" hidden>
+<h2>Supervisión de estudiantes</h2>
+<p>Consulta estudiantes de todos los docentes. El avance permanece asociado a cada cuenta, aun después de renovar un PIN.</p>
+<form id="admin-create-student" class="admin-create-student">
+<label>Seudónimo nuevo<input id="admin-student-name" name="username" minlength="4" maxlength="24" placeholder="Ej. estudiante03" required></label>
+<label>Grupo del estudiante<select name="classId" id="admin-student-class" required></select></label>
+<button type="submit" class="action">Agregar estudiante</button>
+</form>
+<div id="admin-student-result" class="management-message" role="status" aria-live="polite"></div>
+<div id="admin-student-list" class="students-list"></div>
+</section>
+<section class="dash-view" data-for="administrador" data-view="admin-grupos" hidden>
+<h2>Supervisión de grupos</h2>
+<p>Consulta los grupos de todos los docentes. Reasignar un grupo conserva sus estudiantes, respuestas y código de inscripción.</p>
+<div id="admin-group-result" class="management-message" role="status" aria-live="polite"></div>
+<div id="admin-group-list" class="class-list"></div>
+</section>
+<section class="dash-view" data-for="administrador" data-view="admin-docentes" hidden><section id="coord-panel" hidden aria-labelledby="coord-title">
+<h2 id="coord-title">Gestión de docentes</h2>
+<p>Incorpora nuevos profesores mediante invitaciones y administra sus cuentas. Cada docente controla exclusivamente sus propios grupos.</p>
 <button id="make-teacher-invite" class="action" type="button">Generar invitación docente</button>
 <div id="teacher-invite-result" class="class-result" role="status" aria-live="polite"></div>
 <div class="teacher-management">
 <h3>Administrar cuentas docentes</h3>
 <p>Consulta los grupos de cada profesor y administra su acceso. Desactivar conserva los estudiantes y sus avances; eliminar definitivamente solo es posible para cuentas sin grupos ni progreso.</p>
-<label for="teacher-admin-key">Clave de coordinación de Cloudflare</label>
-<input id="teacher-admin-key" type="password" autocomplete="off" spellcheck="false" placeholder="Confirma los cambios con la clave de 24 caracteres" />
+<p>Para editar cuentas, introduce la clave de coordinación en el campo ubicado sobre el menú de este panel.</p>
 <div class="teacher-admin-tools"><button type="button" class="link-button" id="refresh-teachers">Actualizar docentes</button></div>
 <div id="teachers-message" class="teacher-admin-message" role="status" aria-live="polite"></div>
 <div id="teacher-admin-list" aria-label="Docentes registrados"></div>
