@@ -29,6 +29,8 @@ export async function onRequestPost({request,env}){
    const user=await env.DB.prepare('SELECT * FROM users WHERE username=? AND active=1').bind(username).first();
    const valid=user&&await verifyPassword(data.password,user);
    if(!valid)return error('Usuario o PIN incorrectos.',401);
+   if(data.role&&data.role!==user.role)return error('La cuenta corresponde a otro perfil. Selecciona Estudiantes o Docentes.',403);
+   await removeSession(env,request);
    const session=await createSession(env,user.id);
    return response({ok:true,user:{username:user.username,role:user.role}},200,{'set-cookie':session});
   }
