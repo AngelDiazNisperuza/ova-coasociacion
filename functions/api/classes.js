@@ -16,6 +16,17 @@ export async function onRequestPost({request,env}){
   const user=await activeUser(env,request);
   if(user?.role!=='docente')return error('Solo docentes administradores.',403);
   const body=await input(request);
+  if(body.action==='renew_code'){
+   const id=typeof body.id==='string'?body.id:'';
+   if(!/^[0-9a-f-]{36}$/i.test(id))return error('Grupo inválido.');
+   const belongs=await env.DB.prepare('SELECT id FROM classes WHERE id=? AND teacher_id=? AND active=1').bind(id,user.id).first();
+   if(!belongs)return error('No tienes acceso a ese grupo.',403);
+   const code=random(12).toUpperCase().replaceAll('-','A').replaceAll('_','B');
+   const updated=await env.DB.prepare('UPDATE classes SET join_code_hash=? WHERE id=? AND teacher_id=? AND active=1')
+     .bind(await digest(code),id,user.id).run();
+   if(updated.meta?.changes!==1)return error('No se pudo renovar el código.',409);
+   return response({ok:true,code,message:'Código renovado. Los estudiantes y su progreso se conservan.'});
+  }
   if(body.action!=='create')return error('Acción inválida.');
   const name=typeof body.name==='string'?body.name.trim():'';
   if(name.length<3||name.length>60)return error('El nombre debe tener entre 3 y 60 caracteres.');
