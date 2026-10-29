@@ -64,6 +64,87 @@ function buildAdminOverview(){
  renderAdminStudents(data.students);
  renderAdminGroups(data.groups);
 }
+
+// Supervisión lectora: datos recuperados de D1 para la cuenta seleccionada.
+// Todo el contenido de respuestas se inserta mediante textContent.
+function appendAdminReadingProgress(target,data){
+ const section=document.createElement('section');
+ section.className='admin-learning-section';
+ const title=document.createElement('h3');
+ title.textContent='Unidad 02 · Lectura crítica y socios lectores';
+ section.append(title);
+ const r=data.readingProgress;
+ if(!r){
+  const p=document.createElement('p');
+  p.textContent='Aún no se ha guardado progreso de lectura crítica.';
+  section.append(p);target.append(section);return;
+ }
+ function detail(label,value){
+  const row=document.createElement('p');
+  const b=document.createElement('strong');b.textContent=label+': ';
+  const span=document.createElement('span');span.textContent=String(value);
+  row.append(b,span);section.append(row);
+ }
+ function countAnswers(obj){
+  return Object.keys(obj||{}).filter(k=>/^[0-2]$/.test(k)).length;
+ }
+ const answered=Object.values(r.cases||{}).reduce((sum,c)=>sum+countAnswers(c),0);
+ const challenges=Object.values(r.retos||{}).reduce((sum,steps)=>
+  sum+Object.values(steps||{}).filter(Boolean).length,0);
+ const badges=Array.isArray(r.badges)?r.badges:[];
+ const badgeNames={
+  lector:'Lector local',arquitecto:'Arquitecto del sentido',
+  critica:'Voz crítica',emparejador:'Socio emparejador',
+  racha:'Racha de cinco',detective:'Detective de casos',
+  retador:'Retador',integral:'Lector integral'
+ };
+ detail('Última actualización',data.readingUpdatedAt?
+  new Date(data.readingUpdatedAt*1000).toLocaleString('es-CO'):'Sin fecha');
+ detail('Puntos',r.points||0);
+ detail('Racha actual / mejor racha',(r.streak||0)+' / '+(r.best||0));
+ detail('Aciertos por aprendizaje','Literal: '+(r.correct?.A1||0)+
+  ' · Inferencial: '+(r.correct?.A2||0)+' · Crítico: '+(r.correct?.A3||0));
+ detail('Emparejamientos completados',r.rounds||0);
+ detail('Preguntas de casos respondidas',answered+'/12');
+ detail('Pasos de retos realizados',challenges+'/24');
+ detail('Insignias',badges.length+'/8'+(badges.length?
+  ' · '+badges.map(id=>badgeNames[id]||id).join(', '):' · Ninguna conseguida todavía'));
+ const cases={
+  c1:'La canoa de Tomasa',
+  c2:'La huerta del consejo',
+  c3:'Celulares en el aula',
+  c4:'¿Cuánta agua usamos en casa?'
+ };
+ const casesHeading=document.createElement('h4');
+ casesHeading.textContent='Estudios de caso y reflexiones';
+ section.append(casesHeading);
+ for(const [id,name] of Object.entries(cases)){
+  const selections=r.cases?.[id]||{};
+  const marked=[0,1,2].filter(q=>Number.isInteger(selections[q])&&selections[q]>=0&&selections[q]<=3)
+   .map(q=>'P'+(q+1)+': '+String.fromCharCode(65+selections[q]));
+  detail(name,countAnswers(selections)+'/3 respuestas'+
+   (marked.length?' · '+marked.join(' · '):''));
+  detail('Reflexión de '+name,(r.refl?.[id]||'').trim()||'Sin reflexión registrada');
+ }
+ const retosHeading=document.createElement('h4');
+ retosHeading.textContent='Retos de aplicación';
+ section.append(retosHeading);
+ const challengesNames={r1:'Glosario vivo del Sinú',r2:'Arquitectos del sentido',
+  r3:'Verificadores de Cereté'};
+ for(const [id,name] of Object.entries(challengesNames)){
+  const st=r.retos?.[id]||{};
+  const totals=[2,3,3];
+  const labels=['Involucrar','Investigar','Actuar'];
+  const portions=labels.map((l,fi)=>{
+   const done=Array.from({length:totals[fi]},(_,pi)=>Boolean(st[fi+'-'+pi]))
+    .filter(Boolean).length;
+   return l+' '+done+'/'+totals[fi];
+  });
+  detail(name,portions.join(' · '));
+ }
+ target.append(section);
+}
+
 function renderAdminStudents(students){
  const target=aEl('admin-student-list');target.replaceChildren();
  if(!students.length){target.textContent='Sin estudiantes registrados.';return}
@@ -96,8 +177,9 @@ function renderAdminStudents(students){
       const d=await r.json();if(!r.ok||!d.ok)throw Error(d.error||'Sin detalle disponible');
       const target=aEl('admin-student-result');target.replaceChildren();
       const heading=document.createElement('strong');heading.textContent='Avance de '+student.username;target.append(heading);
+      const waterTitle=document.createElement('h3');waterTitle.textContent='Unidad 01 · El cuidado del agua';target.append(waterTitle);
       if(!d.progress){
-       const p=document.createElement('p');p.textContent='Aún no hay respuestas guardadas.';target.append(p);
+       const p=document.createElement('p');p.textContent='Aún no se ha guardado progreso de la Unidad 01.';target.append(p);
       }else{
        const p=document.createElement('p');p.textContent='Última actualización: '+(d.updatedAt?new Date(d.updatedAt*1000).toLocaleString('es-CO'):'sin fecha');target.append(p);
        const answers=[
@@ -115,6 +197,7 @@ function renderAdminStudents(students){
         row.append(bold,span);target.append(row);
        }
       }
+      appendAdminReadingProgress(target,d);
     }catch(e){adminNotice('admin-student-result',e.message)}
    })
   );

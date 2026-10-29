@@ -32,3 +32,12 @@
 .admin-create-student label{min-width:190px;flex:1;font-size:13px;font-weight:700;color:#0d234c}
 .admin-create-student input,.admin-create-student select{display:block;width:100%;min-height:42px;border:1px solid #cbd5e1;border-radius:8px;padding:10px;margin-top:7px;background:#fff}
 [data-view="admin-inicio"] .quick-card strong{font-size:25px}
+
+/* Detalle por estudiante: separar la unidad del agua de la lectura crítica. */
+.admin-learning-section{margin-top:20px;padding:18px 20px;background:#f8fafc;border:1px solid #dbe4ef;border-radius:12px}
+.admin-learning-section h3{color:#0d234c;margin:0 0 12px;font-size:18px}
+.admin-learning-section h4{color:#166534;margin:20px 0 8px;font-size:14px}
+.admin-learning-section p{margin:8px 0;font-size:13px;line-height:1.65;overflow-wrap:anywhere;white-space:pre-wrap}
+.admin-learning-section p strong{color:#0d234c}
+#admin-student-result>h3{color:#0d234c;margin:16px 0 10px;font-size:18px}
+#admin-student-result>p{overflow-wrap:anywhere}
