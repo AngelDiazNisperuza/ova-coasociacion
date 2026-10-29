@@ -12,6 +12,10 @@ export async function onRequestGet({request,env}){
   if(!student)return error('Ese estudiante no pertenece a tus grupos.',403);
   const row=await env.DB.prepare('SELECT data,updated_at FROM activity_progress WHERE user_id=? AND activity_id=?')
    .bind(id,'reto-agua-01').first();
-  return response({ok:true,student:{username:student.username,className:student.class_name},progress:row?JSON.parse(row.data):null,updatedAt:row?.updated_at??null});
+  const reading=await env.DB.prepare('SELECT data,updated_at FROM activity_progress WHERE user_id=? AND activity_id=?')
+   .bind(id,'lectura-critica-11-v1').first();
+  return response({ok:true,student:{username:student.username,className:student.class_name},
+   progress:row?JSON.parse(row.data):null,updatedAt:row?.updated_at??null,
+   readingProgress:reading?JSON.parse(reading.data):null,readingUpdatedAt:reading?.updated_at??null});
  }catch{return error('No fue posible consultar el progreso. Comprueba la tabla activity_progress.',503)}
 }

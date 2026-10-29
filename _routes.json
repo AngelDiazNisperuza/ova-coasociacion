@@ -6,7 +6,12 @@
     "/panel.html",
     "/aula",
     "/aula.html",
-    "/contenido/*"
+    "/contenido/*",
+    "/lectura-unidad.html",
+    "/lectura-actividades.html",
+    "/lectura-retos.html",
+    "/lectura-recursos.html",
+    "/lectura-progreso.html"
   ],
   "exclude": []
 }
