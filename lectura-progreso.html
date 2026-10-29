@@ -1,0 +1,112 @@
+<!doctype html><html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#0d234c"><meta name="description" content="Lectura crítica y habilidades transversales en Coasocia, grado undécimo.">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@500;600;700;800&family=IBM+Plex+Mono:wght@500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/lectura-coasocia.css"><script src="/lectura-coasocia.js" defer></script><title>Mi progreso lector | Coasocia</title></head><body><header class="top">
+  <div class="wrap">
+    <div class="brand"><a href="/panel.html"><b>coasocia · Socios Lectores 11.º</b></a><span>LABORATORIO DE HABILIDADES · Lectura crítica y coasociación</span></div>
+    <div class="hud"><a class="pill" href="/panel.html">Mi espacio</a><span class="sync" id="sync-status" role="status" aria-live="polite">Cargando progreso…</span>
+      <span class="pill" title="Puntos acumulados"><small>Puntos</small><span id="hud-pts">0</span></span>
+      <span class="pill" title="Respuestas correctas seguidas"><small>Racha</small><span id="hud-streak">0</span></span>
+      <a class="pill" href="/lectura-progreso.html" title="Ver insignias"><small>Insignias</small><span id="hud-badges">0/8</span></a>
+    </div>
+  </div>
+  <div class="wrap"><nav class="tabs" aria-label="Estaciones">
+    <a href="/lectura-unidad.html">Matriz completada</a>
+    <a href="/lectura-actividades.html#emparejar">Emparejamiento</a>
+    <a href="/lectura-actividades.html#ruleta">Ruleta</a>
+    <a href="/lectura-retos.html">Retos</a>
+    <a href="/lectura-recursos.html">Estudios de caso</a>
+    <a href="#insignias">Insignias</a>
+  </nav></div>
+</header>
+
+<main class="wrap" id="reading-main" hidden>
+  <section id="v-matriz" data-view>
+    <div class="view-head">
+      <span class="eyebrow">Referencias de lectura crítica · Grado 11.º</span>
+      <h2>Tres aprendizajes, doce evidencias, desarrollados para el aula</h2>
+      <p class="howto">Cada evidencia se amplía con qué significa, cómo se observa en el desempeño, una actividad de coasociación y un modelo de pregunta. Abre cada tarjeta para verla.</p>
+    </div>
+    <div class="types">
+      <div class="type"><h3>Textos continuos</h3><p><b>Literarios:</b> novela, cuento, poesía, canción y dramaturgia.<br><b>Informativos:</b> expositivo, descriptivo y argumentativo.</p></div>
+      <div class="type"><h3>Textos discontinuos</h3><p><b>Literarios:</b> caricatura y cómic.<br><b>Informativos:</b> etiqueta, infografía, tabla, diagrama, publicidad, manual y reglamento.</p></div>
+    </div>
+    <div id="matrix"></div>
+  </section>
+
+  <section id="v-emparejar" data-view hidden>
+    <div class="view-head">
+      <span class="eyebrow">Estación 1 · Emparejamiento</span>
+      <h2>Une cada evidencia con su pareja</h2>
+      <p class="howto">En clase: parejas de socios con un solo dispositivo. Uno elige la evidencia y el otro la pareja; deben acordar antes de tocar. Cada pareja correcta suma 5 puntos.</p>
+    </div>
+    <div class="toolbar">
+      <div class="seg" role="group" aria-label="Modo de emparejamiento">
+        <button id="m-preg" aria-pressed="true">Evidencia ↔ pregunta tipo</button>
+        <button id="m-act" aria-pressed="false">Evidencia ↔ actividad de socios</button>
+      </div>
+      <button class="btn ghost" id="m-new">Nueva ronda</button>
+      <span class="status" id="m-status"></span>
+    </div>
+    <div class="match">
+      <div class="col"><h3>Evidencias</h3><div class="col" id="m-left"></div></div>
+      <div class="col"><h3 id="m-right-h">Preguntas tipo</h3><div class="col" id="m-right"></div></div>
+    </div>
+    <div id="m-done"></div>
+  </section>
+
+  <section id="v-ruleta" data-view hidden>
+    <div class="view-head">
+      <span class="eyebrow">Estación 2 · Gamificación</span>
+      <h2>Gira la ruleta y responde el reto</h2>
+      <p class="howto">En clase: el docente proyecta y los equipos rotan el turno. El vocero gira, el equipo discute 30 segundos y el relator responde. Los aciertos alimentan las insignias de cada nivel.</p>
+    </div>
+    <div class="roulette">
+      <div class="wheel-box">
+        <div class="wheel-wrap"><canvas id="wheel" width="680" height="680" aria-label="Ruleta de retos de lectura"></canvas><div class="pointer" aria-hidden="true"></div></div>
+        <button class="btn" id="spin">Girar la ruleta</button>
+        <div class="legend" id="legend"></div>
+      </div>
+      <div class="qcard empty" id="r-card" aria-live="polite">
+        <p><b>Cómo funciona.</b> Literal, Inferencial y Crítico traen una pregunta de ese nivel. <b>Doble puntaje</b> vale 20 puntos. <b>Comodín socio</b> se responde en pareja. <b>Reto oral</b> se resuelve hablando y lo valida el docente.</p>
+      </div>
+    </div>
+  </section>
+
+  <section id="v-retos" data-view hidden>
+    <div class="view-head">
+      <span class="eyebrow">Estación 3 · Aprendizaje basado en retos</span>
+      <h2>Tres retos reales, uno por aprendizaje</h2>
+      <p class="howto">Cada reto sigue las fases Involucrar, Investigar y Actuar. El equipo marca cada paso cuando lo termina (5 puntos por paso). El avance se conserva en tu cuenta personal de Coasocia.</p>
+    </div>
+    <div id="retos"></div>
+  </section>
+
+  <section id="v-casos" data-view hidden>
+    <div class="view-head">
+      <span class="eyebrow">Estación 4 · Estudios de caso digitales</span>
+      <h2>Lee el caso, responde y discute en equipo</h2>
+      <p class="howto">Cuatro casos con textos continuos y discontinuos. Entre los cuatro trabajan las doce evidencias, una por pregunta. Cada caso termina con una pregunta abierta para debatir en equipo.</p>
+    </div>
+    <div class="case-tabs" id="case-tabs"></div>
+    <div id="case"></div>
+  </section>
+
+  <section id="v-insignias" data-view hidden>
+    <div class="view-head">
+      <span class="eyebrow">Progreso</span>
+      <h2>Insignias del lector</h2>
+      <p class="howto">Las insignias se ganan en la ruleta, el emparejamiento, los retos y los casos. Tus puntos, respuestas e insignias se guardan en tu cuenta; cada estudiante conserva su propio registro aunque comparta dispositivo con su equipo.</p>
+    </div>
+    <div class="prog" id="prog"></div>
+    <div class="badges" id="badges"></div>
+    <div class="danger">
+      <button class="btn ghost" id="reset">Reiniciar progreso</button>
+      <span id="reset-confirm" hidden><span class="status">¿Borrar puntos, insignias y respuestas? </span><button class="btn" id="reset-yes">Sí, borrar</button> <button class="btn ghost" id="reset-no">Cancelar</button></span>
+    </div>
+  </section>
+</main>
+<div class="toast" id="toast" role="status"></div>
+
+</body></html>
