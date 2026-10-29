@@ -5,7 +5,7 @@ export async function onRequest(context){
  const protectedPath=url.pathname==='/aula'||url.pathname==='/aula/'||url.pathname==='/aula.html'
   ||url.pathname==='/panel'||url.pathname==='/panel/'||url.pathname==='/panel.html'
   ||url.pathname.startsWith('/contenido/')
-  ||/^\/lectura-(unidad|actividades|retos|recursos|progreso)\.html$/.test(url.pathname);
+  ||/^\/lectura-(unidad|actividades|retos|recursos|progreso)(?:\.html)?\/?$/.test(url.pathname);
  if(!protectedPath)return context.next();
  if(!['GET','HEAD'].includes(context.request.method))return new Response('Método no admitido',{status:405});
  if(!dbReady(context.env))return Response.redirect(new URL('/acceso.html',url),302);
