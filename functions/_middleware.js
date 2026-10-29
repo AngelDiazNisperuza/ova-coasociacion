@@ -12,7 +12,11 @@ export async function onRequest(context){
  try{
   const user=await activeUser(context.env,context.request);
   if(!user)return Response.redirect(new URL('/acceso.html',url),302);
-  if((url.pathname.startsWith('/aula')||url.pathname.startsWith('/contenido/')||url.pathname.startsWith('/lectura-'))&&await isAdministrator(context.env,user))return Response.redirect(new URL('/panel.html',url),302);
+  // Las actividades y lecturas son exclusivas del perfil estudiante.
+  // El docente sigue los avances desde su panel y no debe acceder al aula,
+  // aunque escriba manualmente una dirección de actividad.
+  const studentContent=url.pathname.startsWith('/aula')||url.pathname.startsWith('/contenido/')||url.pathname.startsWith('/lectura-');
+  if(studentContent&&user.role!=='estudiante')return Response.redirect(new URL('/panel.html',url),302);
   const result=await context.next();
   const copy=new Response(result.body,result);
   copy.headers.set('Cache-Control','private, no-store');

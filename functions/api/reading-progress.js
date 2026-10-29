@@ -44,7 +44,7 @@ export async function onRequestGet({request,env}){
  try{
   const user=await activeUser(env,request);
   if(!user)return error('Inicia sesión.',401);
-  if(await isAdministrator(env,user))return error('Acceso reservado a estudiantes y docentes.',403);
+  if(user.role!=='estudiante')return error('Las actividades son exclusivas de estudiantes. Consulta el panel docente para seguimiento.',403);
   const row=await env.DB.prepare('SELECT data,updated_at FROM activity_progress WHERE user_id=? AND activity_id=?').bind(user.id,ACTIVITY).first();
   return response({ok:true,progress:row?clean(JSON.parse(row.data)):null,updatedAt:row?.updated_at??null});
  }catch{return error('No se pudo recuperar el progreso lector.',503)}
@@ -55,7 +55,7 @@ export async function onRequestPost({request,env}){
  try{
   const user=await activeUser(env,request);
   if(!user)return error('Inicia sesión.',401);
-  if(await isAdministrator(env,user))return error('Acceso reservado a estudiantes y docentes.',403);
+  if(user.role!=='estudiante')return error('Las actividades son exclusivas de estudiantes. Consulta el panel docente para seguimiento.',403);
   const body=await input(request),progress=clean(body.progress);
   if(!progress)return error('Información de progreso incorrecta.');
   const value=JSON.stringify(progress);
