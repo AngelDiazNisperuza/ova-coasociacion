@@ -244,7 +244,48 @@ function renderAdminGroups(groups){
     if(window.confirm('¿Reemplazar el código anterior de '+group.name+'?'))
      await adminAction({action:'group_new_code',id:group.id},'admin-group-result');
    })
-  );box.append(actions);target.append(box);
+  );
+  const remove=control('Eliminar grupo',async()=>{
+   const amount=Number(group.students||0);
+   let transferClassId;
+   let destination=null;
+   if(amount>0){
+    // Restringir los posibles destinos a cursos del mismo docente.
+    const options=groups.filter(g=>g.id!==group.id&&g.teacher_id===group.teacher_id&&
+      g.active&&g.teacher_active&&Number(g.students||0)+amount<=50);
+    if(!options.length){
+     adminNotice('admin-group-result',
+      'Este grupo tiene '+amount+' estudiantes. Primero debe existir otro grupo activo del mismo docente con cupo suficiente. No se eliminó nada.');
+     return;
+    }
+    const choices=options.map((g,i)=>(i+1)+'. '+g.name+' ('+g.students+' estudiantes)').join('\\n');
+    const value=window.prompt('El grupo '+group.name+' tiene '+amount+' estudiantes.\\n'+
+     'Para conservar sus cuentas y avances, selecciona el número del grupo de destino del mismo docente:\\n'+choices);
+    if(value===null)return;
+    if(!/^[0-9]+$/.test(value.trim())){
+     adminNotice('admin-group-result','Selecciona uno de los números ofrecidos. No se eliminó el grupo.');return;
+    }
+    destination=options[Number(value.trim())-1];
+    if(!destination){
+     adminNotice('admin-group-result','Grupo de destino inválido. No se eliminó nada.');return;
+    }
+    transferClassId=destination.id;
+   }
+   const confirmation='ELIMINAR '+group.id.slice(-8).toUpperCase();
+   const detail=amount>0?
+    'Los '+amount+' estudiantes se transferirán a '+destination.name+
+     ' y conservarán sus cuentas, respuestas y progreso.':
+    'Este grupo no tiene estudiantes y se retirará de manera definitiva.';
+   const typed=window.prompt('Eliminación de grupo: '+group.name+'\\nDocente: '+
+     (group.teacher_name||'Sin docente')+'\\n'+detail+
+     '\\nEsta acción no se puede deshacer. Escribe exactamente '+confirmation+' para confirmar:');
+   if(typed!==confirmation)return;
+   await adminAction({action:'group_delete',id:group.id,...(transferClassId?{transferClassId}:{})},'admin-group-result');
+  });
+  remove.classList.add('danger');
+  remove.setAttribute('aria-label','Eliminar grupo '+group.name+' del docente '+(group.teacher_name||''));
+  actions.append(remove);
+  box.append(actions);target.append(box);
  }
 }
 aEl('admin-create-student')?.addEventListener('submit',async e=>{
