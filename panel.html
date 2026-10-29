@@ -16,7 +16,7 @@
 <button type="button" data-for="regular" data-view-button="actividades">Actividades</button>
 <button type="button" data-view-button="progreso" data-for="estudiante" hidden>Mi aprendizaje</button>
 <button type="button" data-for="regular" data-view-button="recursos">Recursos</button>
-<button type="button" data-view-button="grupos" data-for="docente" hidden>Mis grupos</button>
+<button type="button" data-view-button="grupos" data-for="docente" hidden>Mis estudiantes</button>
 <button type="button" data-for="administrador" data-view-button="admin-inicio" hidden>Resumen general</button>
 <button type="button" data-for="administrador" data-view-button="admin-docentes" hidden>Docentes</button>
 <button type="button" data-for="administrador" data-view-button="admin-estudiantes" hidden>Estudiantes</button>
@@ -52,17 +52,31 @@
 <details class="resource-card"><summary>Comunicación y trabajo compartido <span aria-hidden="true">⌄</span></summary><div><p>Escuchar razones, intercambiar perspectivas y revisar acuerdos contribuye a construir conocimiento con otras personas.</p><a class="action action-link" href="/aula.html#recursos">Abrir material en el aula</a></div></details>
 <details class="resource-card"><summary>Reflexión y propuestas <span aria-hidden="true">⌄</span></summary><div><p>Justifica tus propuestas, describe cómo podrían revisarse y expresa qué aprendiste durante la experiencia.</p><a class="action action-link" href="/aula.html#recursos">Abrir material en el aula</a></div></details>
 </section>
-<section class="dash-view" data-view="grupos" hidden data-for="docente"><section id="teacher-panel" hidden aria-labelledby="teacher-title">
-<h2 id="teacher-title">Administración docente</h2><p>Crea una clase y entrega su código de registro a tus estudiantes. El código se muestra una sola vez: consérvalo fuera del sitio.</p>
-<form id="class-form" class="create-class"><label>Nombre de clase<input name="name" maxlength="60" minlength="3" placeholder="Ej. Grado 10.º — Grupo A" required></label><button class="action" type="submit">Crear código de clase</button></form>
-<div id="class-result" class="class-result" role="status" aria-live="polite"></div>
-<h3>Clases creadas</h3><div id="class-list" class="class-list"></div>
-<div class="students-header"><div><h3>Gestión de estudiantes</h3><p>Actualiza usuarios, genera un PIN nuevo o elimina una cuenta. Restablecer el PIN conserva las actividades guardadas; eliminar la cuenta borra esos datos de manera definitiva.</p></div>
-<button class="link-button" type="button" id="refresh-students">Actualizar lista</button></div>
+<section class="dash-view" data-view="grupos" hidden data-for="docente">
+<section id="teacher-panel" hidden aria-labelledby="teacher-title">
+<h2 id="teacher-title">Mis estudiantes y su progreso</h2>
+<p>Este panel muestra exclusivamente estudiantes de los cursos asignados a tu cuenta. Consulta las respuestas y los resultados formativos de cada estudiante sin ingresar a sus actividades.</p>
+<div class="students-header">
+ <div><h3>Estudiantes de mis cursos</h3><p>Selecciona un estudiante para revisar su progreso en las unidades, casos y retos. Los puntos de juego son indicadores de participación, no calificaciones oficiales.</p></div>
+ <button class="link-button" type="button" id="refresh-students">Actualizar estudiantes</button>
+</div>
+<div class="teacher-roster-tools"><label for="teacher-class-filter">Filtrar por mi curso</label>
+<select id="teacher-class-filter" aria-label="Filtrar estudiantes por curso"><option value="">Todos mis cursos</option></select>
+<span id="teacher-roster-count" role="status" aria-live="polite"></span></div>
 <div id="students-message" class="management-message" role="status" aria-live="polite"></div>
-<div id="students-list" class="students-list"></div><div id="student-progress-detail" class="student-progress-detail" role="region" aria-label="Progreso del estudiante" aria-live="polite" hidden></div>
+<div id="students-list" class="students-list" aria-label="Estudiantes de mis cursos"></div>
+<div id="student-progress-detail" class="student-progress-detail" role="region" aria-label="Progreso del estudiante" aria-live="polite" hidden></div>
+<details class="teacher-course-management">
+<summary>Administrar mis cursos y cuentas de estudiantes</summary>
+<div class="teacher-course-body">
+<p>Esta sección es para registrar cursos, renovar sus códigos de inscripción y gestionar cuentas de tus estudiantes. Los datos de otros docentes no están disponibles.</p>
+<form id="class-form" class="create-class"><label>Nombre del curso<input name="name" maxlength="60" minlength="3" placeholder="Ej. Grado 11.º — Grupo A" required></label><button class="action" type="submit">Crear curso y código</button></form>
+<div id="class-result" class="class-result" role="status" aria-live="polite"></div>
+<h3>Mis cursos registrados</h3><div id="class-list" class="class-list"></div>
+<p>Desde la lista de estudiantes puedes actualizar usuarios, renovar un PIN o eliminar una cuenta de tus cursos. La eliminación borra definitivamente los avances de esa cuenta.</p>
+</div>
+</details>
 </section>
-
 </section>
 <section class="dash-view" data-for="administrador" data-view="admin-inicio" hidden>
 <h2>Centro de Gestión – Ibeth Ruiz</h2>
