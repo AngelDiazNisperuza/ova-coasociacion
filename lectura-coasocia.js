@@ -244,9 +244,34 @@ async function hydrate(){
   }
   stateReady=true;
   syncStatus("Avance individual sincronizado");
-  document.querySelector("#reading-main").hidden=false;
-  hydrate();
- }catch(e){syncStatus("No fue posible cargar tu avance; recarga la página.",true)}
+  showContent();
+  document.querySelectorAll('[data-locked-by-sync="1"]').forEach(el=>{
+   el.disabled=false;
+   delete el.dataset.lockedBySync;
+  });
+  document.querySelector("#sync-warning")?.remove();
+ }catch(e){
+  stateReady=false;
+  syncStatus("No se pudo sincronizar el avance",true);
+  showContent();
+  document.querySelectorAll("#reading-main button, #reading-main input, #reading-main textarea").forEach(el=>{
+   if(!el.disabled){el.disabled=true;el.dataset.lockedBySync="1";}
+  });
+  if(!document.querySelector("#sync-warning")){
+   const box=document.createElement("div");
+   box.id="sync-warning";box.className="banner sync-warning";
+   const message=document.createElement("p");
+   message.textContent="Puedes consultar las lecturas, pero no se pudo recuperar tu progreso. Las respuestas están pausadas para evitar pérdidas.";
+   const button=document.createElement("button");
+   button.type="button";button.className="btn";
+   button.textContent="Reintentar conexión";button.addEventListener("click",hydrate);
+   box.append(message,button);document.querySelector("#reading-main").prepend(box);
+  }
+ }
+}
+function showContent(){
+ renderMatrix();newRound();renderRetos();renderCaseTabs();renderCase();hud();drawWheel();route();
+ document.querySelector("#reading-main").hidden=false;
 }
 addEventListener("pagehide",()=>{
  if(dirty&&stateReady)fetch("/api/reading-progress",{method:"POST",credentials:"same-origin",keepalive:true,
@@ -392,7 +417,7 @@ function renderCase(){
    <div class="qcard"><label class="lbl" for="refl-${c.id}">Discusión en equipo</label><p class="status">${esc(c.disc)}</p><textarea id="refl-${c.id}" placeholder="Escriban aquí las conclusiones del equipo">${esc(S.refl[c.id]||"")}</textarea></div>
   </div></div>`;
  if(c.id==="c4"){const max=90;$("#info").innerHTML=INFO.map(([n,v,s])=>`<div class="info-row"><span>${esc(n)}</span><span class="track"><i class="${s?"saver":""}" style="width:${Math.max(1.5,v/max*100)}%"></i></span><span class="v">${String(v).replace(".",",")} L</span></div>`).join("")}
- const ta=$("#refl-"+c.id);ta.addEventListener("input",()=>{S.refl[c.id]=ta.value;save()});
+ const ta=$("#refl-"+c.id);ta.maxLength=650;ta.addEventListener("input",()=>{S.refl[c.id]=ta.value.slice(0,650);save()});
  $("#case").querySelectorAll("[data-cq]").forEach(b=>b.onclick=()=>{const qi=+b.dataset.cq,i=+b.dataset.i,q=c.qs[qi];
   (S.cases[c.id]||(S.cases[c.id]={}))[qi]=i;award(evById[q.e].a,i===q.c);renderCaseTabs();renderCase();});
 }
@@ -411,15 +436,17 @@ $("#reset-yes").onclick=()=>{S=fresh();save();hud();renderBadges();renderRetos()
 /* ---------- RUTAS ---------- */
 const VIEWS=["matriz","emparejar","ruleta","retos","casos","insignias"];
 function route(){
- const defaults={"/lectura-unidad.html":"matriz","/lectura-actividades.html":"emparejar",
-  "/lectura-retos.html":"retos","/lectura-recursos.html":"casos","/lectura-progreso.html":"insignias"};
- const def=defaults[location.pathname]||"matriz";
+ const defaults={"/lectura-unidad":"matriz","/lectura-actividades":"emparejar",
+  "/lectura-retos":"retos","/lectura-recursos":"casos","/lectura-progreso":"insignias"};
+ const path=location.pathname.replace(/\.html$/,"").replace(/\/$/,"");
+ const def=defaults[path]||"matriz";
  const hash=location.hash.slice(1);
- const v=location.pathname==="/lectura-actividades.html"&&["emparejar","ruleta"].includes(hash)?hash:def;
+ const v=path==="/lectura-actividades"&&["emparejar","ruleta"].includes(hash)?hash:def;
  document.querySelectorAll("[data-view]").forEach(s=>s.hidden=s.id!=="v-"+v);
  document.querySelectorAll("nav.tabs a").forEach(a=>{
   const u=new URL(a.href,location.href);
-  const active=u.pathname===location.pathname && (v==="emparejar"||v==="ruleta"?u.hash==="#"+v:true);
+  const active=u.pathname.replace(/\.html$/,"").replace(/\/$/,"")===path &&
+   (path==="/lectura-actividades"?u.hash==="#"+v:true);
   if(active)a.setAttribute("aria-current","page");else a.removeAttribute("aria-current");
  });
  if(v==="insignias")renderBadges(); if(v==="ruleta")drawWheel();}
@@ -428,4 +455,4 @@ matchMedia("(prefers-color-scheme: dark)").addEventListener("change",drawWheel);
 new MutationObserver(drawWheel).observe(document.documentElement,{attributes:true,attributeFilter:["data-theme"]});
 if(document.fonts) document.fonts.ready.then(drawWheel);
 
-renderMatrix();newRound();renderRetos();renderCaseTabs();renderCase();hud();drawWheel();route();
+hydrate();

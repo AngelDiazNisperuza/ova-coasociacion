@@ -11,7 +11,17 @@
     "/lectura-actividades.html",
     "/lectura-retos.html",
     "/lectura-recursos.html",
-    "/lectura-progreso.html"
+    "/lectura-progreso.html",
+    "/lectura-unidad",
+    "/lectura-unidad/",
+    "/lectura-actividades",
+    "/lectura-actividades/",
+    "/lectura-retos",
+    "/lectura-retos/",
+    "/lectura-recursos",
+    "/lectura-recursos/",
+    "/lectura-progreso",
+    "/lectura-progreso/"
   ],
   "exclude": []
 }
