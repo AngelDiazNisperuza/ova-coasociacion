@@ -53,3 +53,8 @@
 .teacher-course-management summary:hover{background:#eff4ff}
 .teacher-course-body{padding:0 18px 18px}
 .teacher-course-body p{font-size:13px;color:#526173}
+
+/* Operación destructiva visible solo en el Centro de Gestión. */
+.teacher-admin-actions .danger{border-color:#e4a6a6;color:#9f2020;background:#fff5f5}
+.teacher-admin-actions .danger:hover{background:#fde9e9;color:#831818}
+.teacher-admin-actions .danger:focus-visible{outline:3px solid #a72828;outline-offset:2px}
