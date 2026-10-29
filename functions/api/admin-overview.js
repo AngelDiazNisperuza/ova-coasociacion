@@ -101,6 +101,47 @@ export async function onRequestPost({request,env}){
     await env.DB.prepare('UPDATE classes SET active=? WHERE id=?').bind(active,d.id).run();
     return response({ok:true,message:active?'Grupo reactivado.':'Grupo desactivado. Los registros se conservan.'});
    }
+   if(op==='group_delete'){
+    // Eliminación exclusiva del administrador, con clave de coordinación ya validada.
+    // Ningún estudiante ni su avance se elimina al retirar un grupo.
+    const linked=await env.DB.prepare(
+      "SELECT COUNT(*) AS total, SUM(CASE WHEN role='estudiante' THEN 0 ELSE 1 END) AS unexpected FROM users WHERE class_id=?"
+    ).bind(d.id).first();
+    const sourceCount=Number(linked?.total||0);
+    if(Number(linked?.unexpected||0)>0)return error('Este grupo presenta cuentas vinculadas que requieren revisión antes de eliminarlo.',409);
+    if(sourceCount>0){
+      if(!validId(d.transferClassId)||d.transferClassId===d.id){
+        return error('El grupo tiene estudiantes. Selecciona un grupo de destino del mismo docente para conservar sus cuentas y avances.',409);
+      }
+      const destination=await env.DB.prepare(
+        "SELECT c.id FROM classes c JOIN users t ON t.id=c.teacher_id WHERE c.id=? AND c.teacher_id=? AND c.active=1 AND t.active=1 AND t.role='docente'"
+      ).bind(d.transferClassId,cls.teacher_id).first();
+      if(!destination)return error('El destino debe ser otro grupo activo del mismo docente.',403);
+      const occupants=await env.DB.prepare('SELECT COUNT(*) AS total FROM users WHERE class_id=?')
+        .bind(d.transferClassId).first();
+      if(Number(occupants?.total||0)+sourceCount>50){
+        return error('El grupo de destino no tiene capacidad para recibir a todos los estudiantes (máximo 50).',409);
+      }
+      const moved=await env.DB.batch([
+        env.DB.prepare(
+          "UPDATE users SET class_id=? WHERE class_id=? AND role='estudiante' AND EXISTS (SELECT 1 FROM classes src JOIN classes dst ON src.teacher_id=dst.teacher_id WHERE src.id=? AND dst.id=? AND dst.active=1) AND (SELECT COUNT(*) FROM users WHERE class_id=?) + (SELECT COUNT(*) FROM users WHERE class_id=?) <=50"
+        ).bind(d.transferClassId,d.id,d.id,d.transferClassId,d.transferClassId,d.id),
+        env.DB.prepare('DELETE FROM classes WHERE id=? AND NOT EXISTS (SELECT 1 FROM users WHERE class_id=?)')
+         .bind(d.id,d.id)
+      ]);
+      if(moved[1]?.meta?.changes!==1){
+        return error('No se pudo completar la eliminación. Verifica los grupos y estudiantes antes de reintentar.',409);
+      }
+      return response({ok:true,message:'Grupo eliminado. Los '+sourceCount+' estudiante(s) y todos sus avances se conservaron en el grupo de destino.'});
+    }
+    const deleted=await env.DB.prepare(
+      'DELETE FROM classes WHERE id=? AND NOT EXISTS (SELECT 1 FROM users WHERE class_id=?)'
+    ).bind(d.id,d.id).run();
+    if(deleted.meta?.changes!==1){
+      return error('El grupo recibió estudiantes durante la operación. Actualiza la lista antes de intentar de nuevo.',409);
+    }
+    return response({ok:true,message:'Grupo vacío eliminado definitivamente. Los demás cursos y avances se conservaron.'});
+   }
    if(op==='group_new_code'){
     if(cls.teacher_id===admin.id)return error('Reasigna primero el grupo a un docente.');
     const code=random(12).toUpperCase().replaceAll('-','A').replaceAll('_','B');
