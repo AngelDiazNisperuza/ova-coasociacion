@@ -28,7 +28,7 @@ async function load(){
   showView(admin?'admin-inicio':'inicio');
   if(admin){await loadTeachers();await loadAdminOverview();}
   else if(teacher){await loadClasses();await loadStudents();}
-  else{await loadOwnProgress();}
+  else{await loadOwnProgress();await loadReadingSummary();}
  }catch(err){$('#loading-message').textContent=err.message||'No se pudo verificar la sesión.'}
 }
 async function loadClasses(){
@@ -184,7 +184,7 @@ async function showStudentProgress(id,name){
   const info=await r.json();
   if(!r.ok||!info.ok)throw Error(info.error||'No se pudo obtener el progreso.');
   const group=document.createElement('p');group.textContent='Grupo: '+info.student.className;out.append(group);
-  if(!info.progress){const p=document.createElement('p');p.textContent='El estudiante todavía no ha guardado respuestas en el Reto 01.';out.append(p);return}
+  if(!info.progress){const p=document.createElement('p');p.textContent='El estudiante todavía no ha guardado respuestas en el Reto 01.';out.append(p);}else{
   const date=document.createElement('p');
   date.textContent='Última actualización: '+new Date(info.updatedAt*1000).toLocaleString('es-CO');out.append(date);
   const items=[
@@ -201,6 +201,33 @@ async function showStudentProgress(id,name){
   const dl=document.createElement('dl');dl.className='progress-list';
   for(const [key,value] of items){const dt=document.createElement('dt');dt.textContent=key;const dd=document.createElement('dd');dd.textContent=value||'Sin respuesta';dl.append(dt,dd)}
   out.append(dl);
+  }
+  const readTitle=document.createElement('h3');readTitle.textContent='Lectura crítica · Grado 11.º';out.append(readTitle);
+  const reading=info.readingProgress;
+  if(!reading){
+   const none=document.createElement('p');none.textContent='Todavía no hay avance de lectura crítica guardado.';out.append(none);
+  }else{
+   const summary=document.createElement('p');
+   const caseCount=Object.values(reading.cases||{}).reduce((n,v)=>n+Object.keys(v||{}).length,0);
+   const challengeCount=Object.values(reading.retos||{}).reduce((n,v)=>n+Object.values(v||{}).filter(Boolean).length,0);
+   summary.textContent='Puntos: '+(reading.points||0)+' · Aciertos literales: '+(reading.correct?.A1||0)+
+    ' · Inferenciales: '+(reading.correct?.A2||0)+' · Críticos: '+(reading.correct?.A3||0)+
+    ' · Preguntas de casos: '+caseCount+'/12 · Pasos de retos: '+challengeCount+
+    ' · Insignias: '+(reading.badges?.length||0)+'/8';
+   out.append(summary);
+   if(info.readingUpdatedAt){const time=document.createElement('p');time.textContent='Última actualización de lectura: '+
+     new Date(info.readingUpdatedAt*1000).toLocaleString('es-CO');out.append(time);}
+   const names={c1:'La canoa de Tomasa',c2:'La huerta del consejo',c3:'Celulares en el aula',c4:'¿Cuánta agua usamos en casa?'};
+   const reflections=document.createElement('dl');reflections.className='progress-list';
+   for(const [key,title] of Object.entries(names)){
+    const answers=reading.cases?.[key]||{};
+    const textValue=reading.refl?.[key]||'Sin reflexión escrita';
+    const dt=document.createElement('dt');dt.textContent=title;
+    const dd=document.createElement('dd');dd.textContent='Preguntas respondidas: '+Object.keys(answers).length+'/3. Reflexión: '+textValue;
+    reflections.append(dt,dd);
+   }
+   out.append(reflections);
+  }
   out.scrollIntoView({behavior:'smooth',block:'nearest'});
  }catch(e){const p=document.createElement('p');p.textContent=e.message||'Error de consulta';out.append(p)}
 }
@@ -236,6 +263,23 @@ async function loadOwnProgress(){
 }
 
 
+
+async function loadReadingSummary(){
+ const node=document.querySelector('#reading-progress-summary');if(!node)return;
+ try{
+  const response=await fetch('/api/reading-progress',{credentials:'same-origin',cache:'no-store'});
+  const data=await response.json();
+  if(!response.ok||!data.ok)throw Error(data.error||'No se pudo consultar el avance lector.');
+  const p=data.progress;
+  if(!p){node.textContent='Lectura crítica 11.º: todavía sin registros. Puedes empezar con la Unidad 02.';return}
+  const answered=Object.values(p.cases||{}).reduce((n,c)=>n+Object.keys(c||{}).length,0);
+  node.replaceChildren();
+  const title=document.createElement('strong');title.textContent='Lectura crítica · Socios lectores';
+  const stats=document.createElement('p');stats.textContent='Puntos: '+(p.points||0)+' · Mejor racha: '+(p.best||0)+' · Casos respondidos: '+answered+'/12 · Insignias: '+(p.badges?.length||0)+'/8';
+  const link=document.createElement('a');link.href='/lectura-progreso.html';link.className='action action-link';link.textContent='Ver mi progreso lector';
+  node.append(title,stats,link);
+ }catch(e){node.textContent=e.message||'Sin acceso al avance lector.'}
+}
 // La autorización y la clave de coordinación se verifican siempre desde el servidor.
 async function loadTeachers(){
  const list=$('#teacher-admin-list'),feedback=$('#teachers-message');
