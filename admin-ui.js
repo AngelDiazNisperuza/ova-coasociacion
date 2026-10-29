@@ -258,9 +258,9 @@ function renderAdminGroups(groups){
       'Este grupo tiene '+amount+' estudiantes. Primero debe existir otro grupo activo del mismo docente con cupo suficiente. No se eliminó nada.');
      return;
     }
-    const choices=options.map((g,i)=>(i+1)+'. '+g.name+' ('+g.students+' estudiantes)').join('\\n');
-    const value=window.prompt('El grupo '+group.name+' tiene '+amount+' estudiantes.\\n'+
-     'Para conservar sus cuentas y avances, selecciona el número del grupo de destino del mismo docente:\\n'+choices);
+    const choices=options.map((g,i)=>(i+1)+'. '+g.name+' ('+g.students+' estudiantes)').join('\n');
+    const value=window.prompt('El grupo '+group.name+' tiene '+amount+' estudiantes.\n'+
+     'Para conservar sus cuentas y avances, selecciona el número del grupo de destino del mismo docente:\n'+choices);
     if(value===null)return;
     if(!/^[0-9]+$/.test(value.trim())){
      adminNotice('admin-group-result','Selecciona uno de los números ofrecidos. No se eliminó el grupo.');return;
@@ -276,9 +276,9 @@ function renderAdminGroups(groups){
     'Los '+amount+' estudiantes se transferirán a '+destination.name+
      ' y conservarán sus cuentas, respuestas y progreso.':
     'Este grupo no tiene estudiantes y se retirará de manera definitiva.';
-   const typed=window.prompt('Eliminación de grupo: '+group.name+'\\nDocente: '+
-     (group.teacher_name||'Sin docente')+'\\n'+detail+
-     '\\nEsta acción no se puede deshacer. Escribe exactamente '+confirmation+' para confirmar:');
+   const typed=window.prompt('Eliminación de grupo: '+group.name+'\nDocente: '+
+     (group.teacher_name||'Sin docente')+'\n'+detail+
+     '\nEsta acción no se puede deshacer. Escribe exactamente '+confirmation+' para confirmar:');
    if(typed!==confirmation)return;
    await adminAction({action:'group_delete',id:group.id,...(transferClassId?{transferClassId}:{})},'admin-group-result');
   });
