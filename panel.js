@@ -14,18 +14,18 @@ async function load(){
   const admin=data.user.role==='administrador';
   const teacher=data.user.role==='docente';
   const student=data.user.role==='estudiante';
-  $('#hero-kicker').textContent=admin?'CENTRO DE GESTIÓN':'MI ESPACIO';
+  $('#hero-kicker').textContent=admin?'CENTRO DE GESTIÓN':teacher?'SEGUIMIENTO DOCENTE':'MI ESPACIO';
   $('#welcome').textContent=admin?'Centro de Gestión – Ibeth Ruiz':'Bienvenido, '+data.user.username;
-  $('#subtitle').textContent=admin?'Dirección, administración y supervisión general de Coasocia.':teacher?'Área de acompañamiento y administración de clases.':'Área de aprendizaje y actividades colaborativas.';
+  $('#subtitle').textContent=admin?'Dirección, administración y supervisión general de Coasocia.':teacher?'Consulta exclusivamente tus cursos y el progreso de tus estudiantes.':'Área de aprendizaje y actividades colaborativas.';
   $('#teacher-panel').hidden=!teacher;
   $('#student-panel').hidden=!student;
   $('#coord-panel').hidden=!admin;
   document.querySelectorAll('[data-for]').forEach(el=>{
     const role=el.dataset.for;
-    el.hidden=(role==='regular'&&admin)||(role==='administrador'&&!admin)||(role==='docente'&&!teacher)||(role==='estudiante'&&!student)||(role==='coordinador'&&!admin);
+    el.hidden=(role==='regular'&&!student)||(role==='administrador'&&!admin)||(role==='docente'&&!teacher)||(role==='estudiante'&&!student)||(role==='coordinador'&&!admin);
   });
   $('#dashboard').hidden=false;$('#loading').hidden=true;
-  showView(admin?'admin-inicio':'inicio');
+  showView(admin?'admin-inicio':teacher?'grupos':'inicio');
   if(admin){await loadTeachers();await loadAdminOverview();}
   else if(teacher){await loadClasses();await loadStudents();}
   else{await loadOwnProgress();await loadReadingSummary();}
@@ -109,9 +109,19 @@ async function loadStudents(){
   const r=await fetch('/api/students',{credentials:'same-origin',cache:'no-store'});
   const data=await r.json();
   if(!r.ok||!data.ok)throw Error(data.error||'No se pudo abrir el listado');
-  status.textContent=data.students.length?'':'Sin estudiantes registrados todavía.';
+  status.textContent=data.students.length?'':'Todavía no tienes estudiantes inscritos en tus cursos.';
+  const filter=$('#teacher-class-filter');
+  const current=filter.value;
+  const ownedCourses=[...new Map(data.students.map(s=>[s.class_id,s.class_name])).entries()]
+   .sort((a,b)=>a[1].localeCompare(b[1],'es'));
+  filter.replaceChildren();
+  const all=document.createElement('option');all.value='';all.textContent='Todos mis cursos';filter.append(all);
+  for(const [id,name] of ownedCourses){
+   const option=document.createElement('option');option.value=id;option.textContent=name;filter.append(option);
+  }
+  if(ownedCourses.some(([id])=>id===current))filter.value=current;
   for(const student of data.students){
-   const card=document.createElement('div');card.className='student-item';
+   const card=document.createElement('div');card.className='student-item';card.dataset.classId=student.class_id;
    const details=document.createElement('div');details.className='student-info';
    const name=document.createElement('strong');name.textContent=student.username;
    const cls=document.createElement('span');cls.textContent=student.class_name+' · '+(student.active?'Cuenta activa':'Cuenta desactivada');
@@ -138,6 +148,7 @@ async function loadStudents(){
    });
    actions.append(view,rename,reset,del);card.append(details,actions);target.append(card);
   }
+  filterTeacherRoster();
  }catch(e){status.textContent=e.message||'No se pudo consultar la lista.'}
 }
 async function manageStudent(payload,showPin=false){
@@ -158,6 +169,22 @@ async function manageStudent(payload,showPin=false){
   }
  }catch(e){message.textContent=e.message||'Operación no completada.'}
 }
+// El filtro trabaja únicamente sobre la lista devuelta por la API del profesor conectado.
+function filterTeacherRoster(){
+ const chosen=$('#teacher-class-filter')?.value||'';
+ let total=0;
+ document.querySelectorAll('#students-list .student-item').forEach(item=>{
+  const visible=!chosen||item.dataset.classId===chosen;
+  item.hidden=!visible;
+  if(visible)total++;
+ });
+ const counter=$('#teacher-roster-count');
+ if(counter)counter.textContent=total+' estudiante'+(total===1?'':'s')+' de mis cursos';
+ const detail=$('#student-progress-detail');
+ if(detail)detail.hidden=true;
+}
+$('#teacher-class-filter')?.addEventListener('change',filterTeacherRoster);
+
 $('#refresh-students')?.addEventListener('click',loadStudents);
 
 
