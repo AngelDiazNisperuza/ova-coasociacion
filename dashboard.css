@@ -41,3 +41,15 @@
 .admin-learning-section p strong{color:#0d234c}
 #admin-student-result>h3{color:#0d234c;margin:16px 0 10px;font-size:18px}
 #admin-student-result>p{overflow-wrap:anywhere}
+
+/* Panel del docente: solo sus estudiantes, con administración de cursos secundaria. */
+.teacher-roster-tools{display:flex;gap:12px;flex-wrap:wrap;align-items:center;margin:16px 0}
+.teacher-roster-tools label{font-size:13px;font-weight:700;color:#0d234c}
+.teacher-roster-tools select{min-height:42px;min-width:200px;max-width:100%;border:1px solid #cbd5e1;border-radius:8px;padding:9px 12px;background:#fff;color:#0b1c30}
+#teacher-roster-count{font-size:13px;color:#526173}
+#students-list .student-item[hidden]{display:none!important}
+.teacher-course-management{margin-top:24px;border:1px solid #dbe4ef;border-radius:12px;background:#f8fafc;overflow:hidden}
+.teacher-course-management summary{padding:15px 18px;cursor:pointer;font-weight:700;color:#0d234c}
+.teacher-course-management summary:hover{background:#eff4ff}
+.teacher-course-body{padding:0 18px 18px}
+.teacher-course-body p{font-size:13px;color:#526173}
